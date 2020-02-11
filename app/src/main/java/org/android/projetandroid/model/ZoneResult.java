@@ -7,5 +7,6 @@ import java.util.List;
 public class ZoneResult {
 
     @Expose
-    public List<Zone> features;
+    public List<Zone> results;
+
 }

@@ -4,11 +4,15 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.otto.Subscribe;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
+
+import org.android.projetandroid.event.SearchResultEvent;
+import org.android.projetandroid.service.ZoneSearchService;
 
 public class ZoneListActivity extends AppCompatActivity {
 
@@ -16,17 +20,19 @@ public class ZoneListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
+        ZoneSearchService.INSTANCE.searchZone();
+    }
+
+    @Subscribe public void  searchResult(final SearchResultEvent event) {
+        // Here someone has posted a SearchResultEvent
+        runOnUiThread (() -> {
+            // Step 1: Update adapter's model
+            System.out.println("++++++++++++++++++++++++++++");
+            System.out.println(event);
+
         });
+
     }
 
 }

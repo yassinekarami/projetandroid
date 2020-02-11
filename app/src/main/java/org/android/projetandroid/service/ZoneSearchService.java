@@ -3,6 +3,8 @@ package org.android.projetandroid.service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.android.projetandroid.event.EventBusManager;
+import org.android.projetandroid.event.SearchResultEvent;
 import org.android.projetandroid.model.ZoneResult;
 
 import java.lang.reflect.Modifier;
@@ -14,6 +16,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public class ZoneSearchService {
 
@@ -33,21 +36,21 @@ public class ZoneSearchService {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .client(new OkHttpClient())
-                .baseUrl("https://api.openaq.org/v1/cities?country=FR")
+                .baseUrl("https://api.openaq.org/v1/")
                 .addConverterFactory(GsonConverterFactory.create(gsonConverter)).build();
 
         mZoneSearchRESTService = retrofit.create(ZoneSearchRESTService.class);
     }
 
-    private void searchZone(){
-        mZoneSearchRESTService.listzone().enqueue(new Callback<ZoneResult>() {
+    public void searchZone(){
+        mZoneSearchRESTService.listzone("FR").enqueue(new Callback<ZoneResult>() {
+
             @Override
             public void onResponse(Call<ZoneResult> call, Response<ZoneResult> response) {
-                if(response.body() != null) {
-                    System.out.println("+++++++++++++++++++++++++++++");
-                    System.out.println(response.body().features);
-                }
 
+                if(response.body() != null) {
+                    EventBusManager.bus.post(new SearchResultEvent(response.body().results));
+                }
             }
 
             @Override
@@ -58,8 +61,8 @@ public class ZoneSearchService {
     }
 
     public interface ZoneSearchRESTService {
-        @GET("zones/all")
-        Call<ZoneResult> listzone();
+        @GET("cities")
+        Call<ZoneResult> listzone(@Query("country") String country);
     }
 }
 

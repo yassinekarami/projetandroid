@@ -39,4 +39,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.7+'
     implementation 'com.squareup.retrofit2:converter-gson:2.7+'
 
+
+    //Otto Event bus
+    implementation 'com.squareup:otto:+'
+
+
 }
