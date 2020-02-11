@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnListActivity)
     public void clickedOnSwitchList() {
-        Intent intent = new Intent(this, ListActivity.class);
+        Intent intent = new Intent(this, ZoneListActivity.class);
         startActivity(intent);
     }
 }
