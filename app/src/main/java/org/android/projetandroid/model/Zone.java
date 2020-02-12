@@ -16,6 +16,10 @@ public class Zone {
     @Expose
     private int count;
 
+    @Expose
+    private int location;
+
+
     public String getCountry() {
         return country;
     }
@@ -56,7 +60,5 @@ public class Zone {
         this.location = location;
     }
 
-    @Expose
-    public int location;
 
 }
