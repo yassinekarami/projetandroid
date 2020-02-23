@@ -8,6 +8,8 @@
     <meta-data android:name="AA_MODELS"
         android:value="org.android.projetandroid.model.Zone"/>
 
+
+
     <application
         android:name="com.activeandroid.app.Application"
         android:allowBackup="true"
@@ -16,6 +18,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data android:name="AA_DB_NAME" android:value="ZoneSearcher"/>
+        <meta-data android:name="AA_DB_VERSION" android:value="1"/>
+        <provider
+            android:name="com.activeandroid.content.ContentProvider"
+            android:authorities="org.android.projetandroid"
+            android:enabled="true"
+            android:exported="false">
+        </provider>
+
+
         <activity
             android:name=".ZoneListActivity"
             android:label="@string/title_activity_list"
