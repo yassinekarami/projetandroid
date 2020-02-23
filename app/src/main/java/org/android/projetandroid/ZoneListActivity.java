@@ -11,7 +11,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchResultEvent;
@@ -28,6 +31,9 @@ public class ZoneListActivity extends AppCompatActivity {
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.activity_list_search_edittext)
+    EditText mSeachEditText;
+
     private ZoneAdapter mZoneAdapter;
 
     @Override
@@ -37,11 +43,32 @@ public class ZoneListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         EventBusManager.bus.register(this);
 
+        // effectue un appel REST pour récupéré les zones
         ZoneSearchService.INSTANCE.searchZone();
 
         mZoneAdapter = new ZoneAdapter(this, new ArrayList<>());
         mRecyclerView.setAdapter(mZoneAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        mSeachEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                ZoneSearchService.INSTANCE.searchZoneFromDB(s.toString());
+            }
+        });
+
+
     }
 
     @Subscribe
@@ -53,9 +80,9 @@ public class ZoneListActivity extends AppCompatActivity {
             mZoneAdapter.setZones(event.getZones());
             mZoneAdapter.notifyDataSetChanged();
 
-
         });
-
     }
+
+
 
 }

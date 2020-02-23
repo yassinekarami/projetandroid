@@ -8,8 +8,6 @@ import com.google.gson.annotations.Expose;
 @Table(name = "Zones")
 public class Zone extends Model {
 
-    @Column(name="label", index = true, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    public String label;
 
     @Expose
     @Column(name = "country")
