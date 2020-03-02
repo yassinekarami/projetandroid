@@ -9,17 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/zone_adapter_country"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="0dp" />
-
-        <Button
-            android:id="@+id/zone_adapter_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="detail" />
 
         <LinearLayout
             android:layout_weight="1"
@@ -28,28 +17,17 @@
             android:layout_height="0dp">
 
             <TextView
-                android:id="@+id/zone_adapter_name"
-                android:layout_width="0dp"
+                android:id="@+id/location_adapter_locations"
+                android:layout_width="match_parent"
                 android:layout_weight="1"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/zone_adapter_city"
+                android:id="@+id/location_adapter_parameters"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/zone_adapter_location"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/zone_adapter_count"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <View
@@ -58,5 +36,6 @@
             android:background="@color/colorPrimary"/>
 
     </LinearLayout>
+
 
 </LinearLayout>
