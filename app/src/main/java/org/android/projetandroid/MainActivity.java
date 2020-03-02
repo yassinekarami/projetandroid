@@ -22,4 +22,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ZoneListActivity.class);
         startActivity(intent);
     }
+
+    @OnClick(R.id.btnMapActivity)
+    public void clicketOnSwitchMap() {
+        Intent intent = new Intent(this, MapZoneActivity.class);
+        startActivity(intent);
+    }
 }

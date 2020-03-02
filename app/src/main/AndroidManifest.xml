@@ -2,13 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.android.projetandroid">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <meta-data android:name="AA_DB_NAME" android:value="ZoneSearcher"/>
-    <meta-data android:name="AA_DB_VERSION" android:value="1"/>
-    <meta-data android:name="AA_MODELS"
-        android:value="org.android.projetandroid.model.Zone"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
-
+    <meta-data
+        android:name="AA_DB_NAME"
+        android:value="ZoneSearcher" />
+    <meta-data
+        android:name="AA_DB_VERSION"
+        android:value="1" />
+    <meta-data
+        android:name="AA_MODELS"
+        android:value="org.android.projetandroid.model.Zone" />
 
     <application
         android:name="com.activeandroid.app.Application"
@@ -19,23 +23,34 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="AA_DB_NAME" android:value="ZoneSearcher"/>
-        <meta-data android:name="AA_DB_VERSION" android:value="1"/>
+        <!-- google map meta data-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBcRt3W8uifSjrhXBu2467iz9ciQqMNTzM"/>
+
+        <activity
+            android:name=".MapZoneActivity"
+            android:label="@string/title_activity_map_zone"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="ZoneSearcher" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="1" />
+
         <provider
             android:name="com.activeandroid.content.ContentProvider"
             android:authorities="org.android.projetandroid"
             android:enabled="true"
-            android:exported="false">
-        </provider>
-
+            android:exported="false"></provider>
 
         <activity
             android:name=".ZoneListActivity"
             android:label="@string/title_activity_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
-        <activity android:name=".ZoneLocationActivity"></activity>
-
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ZoneLocationActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
