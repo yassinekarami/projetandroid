@@ -1,34 +1,76 @@
 package org.android.projetandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.View;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.squareup.otto.Subscribe;
+
+import org.android.projetandroid.event.EventBusManager;
+import org.android.projetandroid.event.SearchLocationResultEvent;
+import org.android.projetandroid.event.SearchResultEvent;
+import org.android.projetandroid.service.LocationSearchService;
+import org.android.projetandroid.service.ZoneSearchService;
+import org.android.projetandroid.ui.LocationAdapter;
+import org.android.projetandroid.ui.ZoneAdapter;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ZoneDetailActivity extends AppCompatActivity {
+public class ZoneLocationActivity extends AppCompatActivity {
 
-    @BindView(R.id.activity_detail_zone)
-    TextView mDetailZone;
+    @BindView(R.id.location_recyclerView)
+    RecyclerView mLocationRecyclerView;
+
+    private LocationAdapter mLocationAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_zone_detail);
+        setContentView(R.layout.activity_zone_location);
         ButterKnife.bind(this);
 
+        Intent intent = getIntent();
+        if(intent != null  && intent.hasExtra("zone")){
+            EventBusManager.bus.register(this);
+            LocationSearchService.INSTANCE.searchLocation(intent.getStringExtra("zone"));
 
+            mLocationAdapter = new LocationAdapter(this, new ArrayList<>());
+            mLocationRecyclerView.setAdapter(mLocationAdapter);
+            mLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        EventBusManager.bus.unregister(this);
+        super.onPause();
+    }
+
+    @Subscribe
+    public void  searchResult(final SearchLocationResultEvent event) {
+
+        // Here someone has posted a SearchResultEvent
+        runOnUiThread (() -> {
+            // Step 1: Update adapter's model
+            mLocationAdapter.setLocations(event.getLocation());
+            mLocationAdapter.notifyDataSetChanged();
+
+        });
     }
 
 }

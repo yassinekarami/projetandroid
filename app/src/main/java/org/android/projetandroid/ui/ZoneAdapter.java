@@ -1,17 +1,19 @@
 package org.android.projetandroid.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.android.projetandroid.R;
+import org.android.projetandroid.ZoneLocationActivity;
 import org.android.projetandroid.model.Zone;
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -47,6 +49,16 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
         holder.mZoneNameTextView.setText(zone.getName());
         holder.mZoneLocationTextView.setText(Integer.toString(zone.getLocation()));
         holder.mZoneCountTextView.setText(Integer.toString(zone.getCount()));
+
+        holder.mDetailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent seeZoneLocationActivity = new Intent(context, ZoneLocationActivity.class);
+                seeZoneLocationActivity.putExtra("zone", zone.getName());
+                context.startActivity(seeZoneLocationActivity);
+            }
+        });
+
     }
 
     @Override
@@ -74,6 +86,9 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
 
         @BindView(R.id.zone_adapter_count)
         TextView mZoneCountTextView;
+
+        @BindView(R.id.zone_adapter_detail)
+        Button mDetailButton;
 
 
 
