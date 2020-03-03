@@ -1,5 +1,6 @@
 package org.android.projetandroid.service;
 
+import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -8,11 +9,14 @@ import org.android.projetandroid.event.SearchLocationResultEvent;
 import org.android.projetandroid.event.SearchResultEvent;
 import org.android.projetandroid.model.Location;
 import org.android.projetandroid.model.LocationResult;
+import org.android.projetandroid.model.Zone;
 
 import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -62,6 +66,28 @@ public class LocationSearchService {
 
             }
         });
+    }
+
+    private void allLocationFromDB (final String location) {
+        List<Location> locations = new Select().from(Location.class)
+                .execute();
+
+        EventBusManager.bus.post(new SearchLocationResultEvent(locations));
+    }
+    public void searchLocationFromDB(String search) {
+        if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
+            mLastScheduleTask.cancel(true);
+        }
+        mLastScheduleTask = mScheduler.schedule(new Runnable() {
+            public void run() {
+                List<Zone> matchingZonesFromBD = new Select().from(Zone.class)
+                        .where("name LIKE '%" + search + "%'")
+                        .orderBy("name")
+                        .execute();
+
+                EventBusManager.bus.post(new SearchResultEvent(matchingZonesFromBD));
+            }
+        }, REFRESH_DELAY, TimeUnit.MILLISECONDS);
     }
 
     public interface LocationSearchRESTService {

@@ -15,7 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 public class MapZoneActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mActiveGoogleMap;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
