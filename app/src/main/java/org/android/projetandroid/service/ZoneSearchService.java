@@ -59,6 +59,7 @@ public class ZoneSearchService {
 
                 if(response.body() != null && response.body().results != null) {
                     ActiveAndroid.beginTransaction();
+                    //sauvegarde de la liste des zones dans la bdd interne du portable
                     for (Zone z : response.body().results) {
                        z.save();
                     }

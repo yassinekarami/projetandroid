@@ -19,6 +19,18 @@ public class Location extends Model {
     @Expose
     private List<Indicateur> countsByMeasurement;
 
+    @Expose
+    @Column(name="coordinates")
+    private Coordinates coordinates;
+
+    public Coordinates getCoordinates(){
+        return coordinates;
+    }
+
+    public void setCoordinates(Coordinates coordinates){
+        this.coordinates = coordinates;
+    }
+
     public List<String> getLocations() {
         return locations;
     }
@@ -57,6 +69,32 @@ public class Location extends Model {
 
         public void setCount(int count) {
             this.count = count;
+        }
+    }
+
+    public class Coordinates{
+        @Expose
+        @Column(name="longitude")
+        double longitude = 0;
+
+        @Expose
+        @Column(name="latitude")
+        double latitude = 0;
+
+        public double getLongitude(){
+            return this.longitude;
+        }
+
+        public void setLongitude(double longitude){
+            this.longitude = longitude;
+        }
+
+        public double getLattitude(){
+            return this.latitude;
+        }
+
+        public void setLattitude(double latitude){
+            this.latitude = latitude;
         }
     }
 }

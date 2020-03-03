@@ -46,7 +46,7 @@ public class ZoneListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
 
-        // effectue un appel REST pour récupéré les zones
+        // effectue un appel REST pour récupérer les zones
         ZoneSearchService.INSTANCE.searchZone();
 
         mZoneAdapter = new ZoneAdapter(this, new ArrayList<>());

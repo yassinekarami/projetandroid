@@ -5,6 +5,12 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.google.gson.annotations.Expose;
 
+import org.android.projetandroid.service.LocationSearchService;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 @Table(name = "Zones")
 public class Zone extends Model {
 
@@ -29,6 +35,16 @@ public class Zone extends Model {
     @Column(name = "location")
     private int location;
 
+    @Expose
+    private List<Double> coordonnees;
+
+    public List<Double> getCoordonnees(){
+        return this.coordonnees;
+    }
+
+    public void setCoordonnees(List<Double> coordonnees){
+        this.coordonnees = coordonnees;
+    }
 
     public String getCountry() {
         return country;

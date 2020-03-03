@@ -1,5 +1,7 @@
 package org.android.projetandroid.service;
 
+import android.util.Log;
+
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -52,6 +54,22 @@ public class LocationSearchService {
         mLocationSearchRESTService = retrofit.create(LocationSearchRESTService.class);
     }
 
+    public void searchLocation(final Zone zone) {
+        mLocationSearchRESTService.listLocation(zone.getCity()).enqueue(new Callback<LocationResult>() {
+            @Override
+            public void onResponse(Call<LocationResult> call, Response<LocationResult> response) {
+                if(response.body() != null && response.body().results != null) {
+                    EventBusManager.bus.post(new SearchLocationResultEvent(zone, response.body().results));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LocationResult> call, Throwable t) {
+                Log.e("Network failure", "error while getting location " + t.getMessage());
+            }
+        });
+    }
+
     public void searchLocation(final String location) {
         mLocationSearchRESTService.listLocation(location).enqueue(new Callback<LocationResult>() {
             @Override
@@ -68,12 +86,12 @@ public class LocationSearchService {
         });
     }
 
-    private void allLocationFromDB (final String location) {
+/*    private void allLocationFromDB (final String location) {
         List<Location> locations = new Select().from(Location.class)
                 .execute();
 
         EventBusManager.bus.post(new SearchLocationResultEvent(locations));
-    }
+    }*/
     public void searchLocationFromDB(String search) {
         if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
             mLastScheduleTask.cancel(true);
