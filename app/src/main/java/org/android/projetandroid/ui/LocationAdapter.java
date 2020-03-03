@@ -48,7 +48,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             holder.mLocationCityTextView.append(l+"\n");
         }
         for(Location.Indicateur i : location.getCountsByMeasurement()) {
-            holder.mLocationParameterTextView.append("p : "+ i.getParameter() +"\n");
+            holder.mLocationParameterTextView.setText(holder.mLocationParameterTextView.getText() + "p : "+ i.getParameter() +"\n");
         }
 
     }

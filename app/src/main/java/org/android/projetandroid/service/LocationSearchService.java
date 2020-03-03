@@ -57,6 +57,10 @@ public class LocationSearchService {
             @Override
             public void onResponse(Call<LocationResult> call, Response<LocationResult> response) {
                 if(response.body() != null && response.body().results != null) {
+                    for(Location l : response.body().results) {
+                        l.save();
+                    }
+
                     EventBusManager.bus.post(new SearchLocationResultEvent(response.body().results));
                 }
             }

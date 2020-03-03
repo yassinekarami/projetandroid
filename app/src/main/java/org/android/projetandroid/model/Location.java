@@ -11,12 +11,15 @@ import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.List;
 
+@Table(name = "Location")
 public class Location extends Model {
 
     @Expose
+    @Column(name="locations")
     private List<String> locations;
 
     @Expose
+    @Column(name="indicateur")
     private List<Indicateur> countsByMeasurement;
 
     public List<String> getLocations() {
