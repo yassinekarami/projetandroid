@@ -47,7 +47,7 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
         holder.mZoneCountryTextView.setText(zone.getCountry());
         holder.mZoneCityTextView.setText(zone.getCity());
         holder.mZoneNameTextView.setText(zone.getName());
-        holder.mZoneLocationTextView.setText(Integer.toString(zone.getLocation()));
+        holder.mZoneLocationTextView.setText(Integer.toString(zone.getLocations()));
         holder.mZoneCountTextView.setText(Integer.toString(zone.getCount()));
 
         holder.mDetailButton.setOnClickListener(new View.OnClickListener() {

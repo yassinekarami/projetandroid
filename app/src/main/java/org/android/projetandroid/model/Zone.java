@@ -26,8 +26,8 @@ public class Zone extends Model {
     private int count;
 
     @Expose
-    @Column(name = "location")
-    private int location;
+    @Column(name = "locations")
+    private int locations;
 
 
     public String getCountry() {
@@ -62,12 +62,12 @@ public class Zone extends Model {
         this.count = count;
     }
 
-    public int getLocation() {
-        return location;
+    public int getLocations() {
+        return locations;
     }
 
-    public void setLocation(int location) {
-        this.location = location;
+    public void setLocation(int locations) {
+        this.locations = locations;
     }
 
 
