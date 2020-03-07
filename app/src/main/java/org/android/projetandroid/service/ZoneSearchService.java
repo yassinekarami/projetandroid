@@ -59,30 +59,25 @@ public class ZoneSearchService {
 
                 if(response.body() != null && response.body().results != null) {
                     ActiveAndroid.beginTransaction();
-                    for (Zone z : response.body().results) {
-                       z.save();
+                    try {
+                        for (Zone z : response.body().results) {
+                            z.save();
+                        }
+                        ActiveAndroid.setTransactionSuccessful();
                     }
-                    EventBusManager.bus.post(new SearchResultEvent(response.body().results));
-                    ActiveAndroid.setTransactionSuccessful();
-                    ActiveAndroid.endTransaction();
+                    finally{
+                        ActiveAndroid.endTransaction();
+                    }
                 }
+                searchZoneFromDB("");
             }
 
             @Override
             public void onFailure(Call<ZoneResult> call, Throwable t) {
-                allZoneFromDB();
             }
         });
     }
 
-
-    private void allZoneFromDB () {
-        List<Zone> zones = new Select().from(Zone.class)
-                .orderBy("name")
-                .execute();
-
-        EventBusManager.bus.post(new SearchResultEvent(zones));
-    }
     public void searchZoneFromDB(String search) {
         if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
             mLastScheduleTask.cancel(true);
