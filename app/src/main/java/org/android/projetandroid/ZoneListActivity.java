@@ -2,6 +2,7 @@ package org.android.projetandroid;
 
 import android.os.Bundle;
 
+import com.activeandroid.ActiveAndroid;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.otto.Subscribe;
@@ -19,6 +20,7 @@ import android.widget.ProgressBar;
 
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchResultEvent;
+import org.android.projetandroid.model.Zone;
 import org.android.projetandroid.service.ZoneSearchService;
 import org.android.projetandroid.ui.ZoneAdapter;
 
@@ -46,9 +48,6 @@ public class ZoneListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
 
-        // effectue un appel REST pour récupéré les zones
-        ZoneSearchService.INSTANCE.searchZone();
-
         mZoneAdapter = new ZoneAdapter(this, new ArrayList<>());
         mRecyclerView.setAdapter(mZoneAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -66,7 +65,7 @@ public class ZoneListActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 mProgressBar.setVisibility(View.VISIBLE);
-                ZoneSearchService.INSTANCE.searchZoneFromDB(s.toString());
+                ZoneSearchService.INSTANCE.searchZone(s.toString());
             }
         });
     }
@@ -81,7 +80,7 @@ public class ZoneListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         EventBusManager.bus.register(this);
-        ZoneSearchService.INSTANCE.searchZone();
+        ZoneSearchService.INSTANCE.searchZone(mSeachEditText.getText().toString());
     }
 
     @Subscribe

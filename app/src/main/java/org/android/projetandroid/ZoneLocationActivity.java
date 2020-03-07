@@ -72,6 +72,7 @@ public class ZoneLocationActivity extends AppCompatActivity {
                 @Override
                 public void afterTextChanged(Editable s) {
                     mProgressBar.setVisibility(View.VISIBLE);
+                    LocationSearchService.INSTANCE.searchLocationFromDB(s.toString());
                 }
             });
 

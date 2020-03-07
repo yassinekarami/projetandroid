@@ -8,27 +8,29 @@ import com.google.gson.annotations.Expose;
 @Table(name = "Zones")
 public class Zone extends Model {
 
-
     @Expose
     @Column(name = "country")
-    private String country;
+    public String country;
 
     @Expose
-    @Column(name = "name")
-    private String name;
+    @Column(name = "name", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    public String name;
 
     @Expose
     @Column(name = "city")
-    private String city;
+    public String city;
 
     @Expose
     @Column(name = "count")
-    private int count;
+    public int count;
 
     @Expose
-    @Column(name = "locations")
-    private int locations;
+    @Column(name = "nblocation")
+    public int locations;
 
+    public Zone() {
+        super();
+    }
 
     public String getCountry() {
         return country;
@@ -62,13 +64,18 @@ public class Zone extends Model {
         this.count = count;
     }
 
+
     public int getLocations() {
         return locations;
     }
 
-    public void setLocation(int locations) {
+    public void setLocations(int locations) {
         this.locations = locations;
     }
+
+
+
+
 
 
 }

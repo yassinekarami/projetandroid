@@ -5,6 +5,7 @@ import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.android.projetandroid.ZoneListActivity;
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchResultEvent;
 import org.android.projetandroid.model.Zone;
@@ -51,7 +52,7 @@ public class ZoneSearchService {
         mZoneSearchRESTService = retrofit.create(ZoneSearchRESTService.class);
     }
 
-    public void searchZone(){
+    public void searchZone(final String search){
         mZoneSearchRESTService.listzone("FR").enqueue(new Callback<ZoneResult>() {
 
             @Override
@@ -67,13 +68,14 @@ public class ZoneSearchService {
                     }
                     finally{
                         ActiveAndroid.endTransaction();
+                        searchZoneFromDB(search);
                     }
                 }
-                searchZoneFromDB("");
             }
 
             @Override
             public void onFailure(Call<ZoneResult> call, Throwable t) {
+                searchZoneFromDB(search);
             }
         });
     }
