@@ -1,0 +1,1 @@
+ALTER TABLE Zones ADD nblocation INTEGER;

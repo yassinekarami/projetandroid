@@ -6,21 +6,28 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.google.gson.annotations.Expose;
 
-import com.google.gson.annotations.Expose;
-
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "Location")
+@Table(name = "Locations")
 public class Location extends Model {
 
+
     @Expose
-    @Column(name="locations")
-    private List<String> locations;
+    @Column(name="location")
+    public List<String> locations;
 
     @Expose
     @Column(name="indicateur")
-    private List<Indicateur> countsByMeasurement;
+    public List<Indicateur> countsByMeasurement;
+
+    @Expose
+    @Column(name="coordinates")
+    private Coordinates coordinates;
+
+    public Coordinates getCoordinates(){
+        return coordinates;
+    }
 
     public List<String> getLocations() {
         return locations;
@@ -41,10 +48,10 @@ public class Location extends Model {
     public class Indicateur{
 
         @Expose
-        String parameter;
+        public String parameter;
 
         @Expose
-        int count;
+        public int count;
 
         public String getParameter() {
             return parameter;
@@ -62,4 +69,31 @@ public class Location extends Model {
             this.count = count;
         }
     }
+
+    public class Coordinates{
+        @Expose
+        @Column(name="longitude")
+        double longitude = 0;
+
+        @Expose
+        @Column(name="latitude")
+        double latitude = 0;
+
+        public double getLongitude(){
+            return this.longitude;
+        }
+
+        public void setLongitude(double longitude){
+            this.longitude = longitude;
+        }
+
+        public double getLattitude(){
+            return this.latitude;
+        }
+
+        public void setLattitude(double latitude){
+            this.latitude = latitude;
+        }
+    }
+
 }

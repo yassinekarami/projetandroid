@@ -4,15 +4,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <meta-data
-        android:name="AA_DB_NAME"
-        android:value="ZoneSearcher" />
-    <meta-data
-        android:name="AA_DB_VERSION"
-        android:value="1" />
-    <meta-data
-        android:name="AA_MODELS"
-        android:value="org.android.projetandroid.model.Zone" />
+    <meta-data android:name="AA_DB_NAME" android:value="application" />
+    <meta-data android:name="AA_DB_VERSION" android:value="43" />
+    <meta-data android:name="AA_MODELS"
+            android:value="org.android.projetandroid.model.Zone,
+                            org.android.projetandroid.model.Location"
+        />
 
     <application
         android:name="com.activeandroid.app.Application"

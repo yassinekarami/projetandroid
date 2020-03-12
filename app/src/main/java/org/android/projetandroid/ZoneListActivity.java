@@ -3,6 +3,7 @@ package org.android.projetandroid;
 import android.os.Bundle;
 
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Delete;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.otto.Subscribe;

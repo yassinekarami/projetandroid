@@ -1,5 +1,6 @@
 package org.android.projetandroid.service;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -52,13 +53,21 @@ public class LocationSearchService {
         mLocationSearchRESTService = retrofit.create(LocationSearchRESTService.class);
     }
 
-    public void searchLocation(final String location) {
-        mLocationSearchRESTService.listLocation(location).enqueue(new Callback<LocationResult>() {
+    // recupère les locations de la zone passé en paramètre
+    public void searchLocation(final String zone) {
+        mLocationSearchRESTService.listLocation("FR", zone).enqueue(new Callback<LocationResult>() {
             @Override
             public void onResponse(Call<LocationResult> call, Response<LocationResult> response) {
                 if(response.body() != null && response.body().results != null) {
-                    for(Location l : response.body().results) {
-                        l.save();
+                    ActiveAndroid.beginTransaction();
+                    try {
+                        for(Location l : response.body().results) {
+                            l.save();
+                        }
+                    }
+                    finally {
+                        ActiveAndroid.endTransaction();
+                        searchLocationFromDB(zone);
                     }
 
                     EventBusManager.bus.post(new SearchLocationResultEvent(response.body().results));
@@ -67,7 +76,7 @@ public class LocationSearchService {
 
             @Override
             public void onFailure(Call<LocationResult> call, Throwable t) {
-
+               allLocationFromDB(zone);
             }
         });
     }
@@ -84,19 +93,19 @@ public class LocationSearchService {
         }
         mLastScheduleTask = mScheduler.schedule(new Runnable() {
             public void run() {
-                List<Zone> matchingZonesFromBD = new Select().from(Zone.class)
-                        .where("name LIKE '%" + search + "%'")
-                        .orderBy("name")
+                List<Location> matchingLocationFromBD = new Select().from(Location.class)
+                        .where("location LIKE '%" + search + "%'")
+                        .orderBy("location")
                         .execute();
 
-                EventBusManager.bus.post(new SearchResultEvent(matchingZonesFromBD));
+                EventBusManager.bus.post(new SearchLocationResultEvent(matchingLocationFromBD));
             }
         }, REFRESH_DELAY, TimeUnit.MILLISECONDS);
     }
 
     public interface LocationSearchRESTService {
         @GET("locations")
-        Call<LocationResult> listLocation(@Query("city") String location);
+        Call<LocationResult> listLocation(@Query("country") String country, @Query("city") String location);
 
     }
 }
