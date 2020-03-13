@@ -48,6 +48,11 @@ public class ZoneLocationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone_location);
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         Intent intent = getIntent();
         if(intent != null  && intent.hasExtra("zone")){
@@ -75,20 +80,14 @@ public class ZoneLocationActivity extends AppCompatActivity {
                     LocationSearchService.INSTANCE.searchLocationFromDB(s.toString());
                 }
             });
-
         }
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        EventBusManager.bus.unregister(this);
         super.onPause();
+        EventBusManager.bus.unregister(this);
+
     }
 
     @Subscribe
