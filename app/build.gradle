@@ -50,5 +50,8 @@ dependencies {
     // add google maps
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
 
+    //picasso ( image )
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 
 }

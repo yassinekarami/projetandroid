@@ -6,11 +6,12 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.google.gson.annotations.Expose;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "Locations")
-public class Location extends Model {
+public class Location extends Model implements Serializable {
 
 
     @Expose
@@ -45,7 +46,7 @@ public class Location extends Model {
         this.countsByMeasurement = countsByMeasurement;
     }
 
-    public class Indicateur{
+    public class Indicateur implements Serializable{
 
         @Expose
         public String parameter;
@@ -70,7 +71,7 @@ public class Location extends Model {
         }
     }
 
-    public class Coordinates{
+    public class Coordinates implements  Serializable{
         @Expose
         @Column(name="longitude")
         double longitude = 0;

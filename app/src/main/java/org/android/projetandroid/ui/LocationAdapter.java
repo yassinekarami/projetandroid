@@ -11,7 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.android.projetandroid.LocationDetailActivity;
 import org.android.projetandroid.R;
+import org.android.projetandroid.ZoneLocationActivity;
 import org.android.projetandroid.model.Location;
 
 
@@ -50,6 +52,16 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         for(Location.Indicateur i : location.getCountsByMeasurement()) {
             holder.mLocationParameterTextView.setText(holder.mLocationParameterTextView.getText() + i.getParameter() +" : "+i.getCount()+ "\n");
         }
+        holder.mLocationDetailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Intent seeLocationDetailActivity = new Intent(context, LocationDetailActivity.class);
+                seeLocationDetailActivity.putExtra("location", location);
+                context.startActivity(seeLocationDetailActivity);
+            }
+        });
 
     }
 
@@ -70,6 +82,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
         @BindView(R.id.location_adapter_locations)
         TextView mLocationCityTextView;
+
+        @BindView(R.id.location_adapter_detail)
+        Button mLocationDetailButton;
 
 
         public LocationViewHolder(@NonNull View itemView) {
