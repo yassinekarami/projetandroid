@@ -53,5 +53,9 @@ dependencies {
     //picasso ( image )
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    //debug database
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+
+
 
 }
