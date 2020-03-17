@@ -12,8 +12,7 @@
         android:value="43" />
     <meta-data
         android:name="AA_MODELS"
-        android:value="org.android.projetandroid.model.Zone,
-         org.android.projetandroid.model.Location" />
+        android:value="org.android.projetandroid.model.Zone,             org.android.projetandroid.model.Location,             org.android.projetandroid.model.Location.Coordinates,             org.android.projetandroid.model.Location.Indicateur" />
 
     <application
         android:name="com.activeandroid.app.Application"
@@ -23,6 +22,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".FavorisActivity"
+            android:label="@string/title_activity_favoris"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <!-- google map meta data -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -53,7 +56,7 @@
         <activity android:name=".ZoneLocationActivity" />
         <activity
             android:name=".LocationDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

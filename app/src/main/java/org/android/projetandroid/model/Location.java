@@ -13,14 +13,15 @@ import java.util.List;
 @Table(name = "Locations")
 public class Location extends Model implements Serializable {
 
-
-
     @Expose
     public List<Indicateur> countsByMeasurement = new ArrayList<>();
 
     @Expose
     @Column(name="zone")
     public String city;
+
+    @Column(name="identifiant")
+    public long identifiant;
 
     @Column(name = "indicateur")
     public String indicateur;
@@ -32,6 +33,13 @@ public class Location extends Model implements Serializable {
     @Expose
     @Column(name="coordinates")
     public Coordinates coordinates;
+
+    @Column(name="favoris")
+    public boolean favoris;
+
+    public Location(){
+        super();
+    }
 
 
     public List<Indicateur> getCountsByMeasurement() {
@@ -68,6 +76,7 @@ public class Location extends Model implements Serializable {
         @Expose
         @Column(name="count")
         public int count;
+
 
         public String getParameter() {
             return parameter;

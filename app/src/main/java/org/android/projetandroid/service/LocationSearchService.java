@@ -79,6 +79,9 @@ public class LocationSearchService {
                             loc.coordinates = c;
                             loc.coordinates.save();
 
+                            loc.favoris = false;
+                            loc.identifiant = (long)(Math.random() * ( 9999999 - 1 ));
+
                             loc.indicateur = gson.toJson(l.countsByMeasurement);
                             loc.save();
                         }
@@ -108,6 +111,22 @@ public class LocationSearchService {
                 List<Location> matchingLocationFromBD = new Select().from(Location.class)
                         .where("zone LIKE '%" + zone + "%'")
                         .where("location LIKE '%" + search + "%'")
+                        .orderBy("location")
+                        .execute();
+
+                EventBusManager.bus.post(new SearchLocationResultEvent(matchingLocationFromBD));
+            }
+        }, REFRESH_DELAY, TimeUnit.MILLISECONDS);
+    }
+
+    public void searchFavoris() {
+        if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
+            mLastScheduleTask.cancel(true);
+        }
+        mLastScheduleTask = mScheduler.schedule(new Runnable() {
+            public void run() {
+                List<Location> matchingLocationFromBD = new Select().from(Location.class)
+                        .where("favoris = 1")
                         .orderBy("location")
                         .execute();
 

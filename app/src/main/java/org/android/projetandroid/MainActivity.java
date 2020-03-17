@@ -28,4 +28,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MapZoneActivity.class);
         startActivity(intent);
     }
+
+    @OnClick(R.id.btnFavorisActivity)
+    public void clickedOnFavorisList(){
+        Intent intent = new Intent (this, FavorisActivity.class);
+        startActivity(intent);
+    }
 }

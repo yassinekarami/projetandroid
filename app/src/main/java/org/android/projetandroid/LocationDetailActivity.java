@@ -3,23 +3,36 @@ package org.android.projetandroid;
 import android.os.Bundle;
 import android.content.Intent;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Update;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.android.projetandroid.model.Location;
 
+import java.lang.reflect.Modifier;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class LocationDetailActivity extends AppCompatActivity {
 
+    Gson gson ;
+
     @BindView(R.id.detail_location_favoris)
     Button mFavorisButton;
+
+    @BindView(R.id.detail_location_favoris_retirer)
+    Button mButtonRetirer;
 
     @BindView(R.id.detail_location_indicateur)
     TextView mDetailIndicateur;
@@ -30,7 +43,8 @@ public class LocationDetailActivity extends AppCompatActivity {
     @BindView(R.id.detail_location_image)
     ImageView mDetailImage;
 
-    private  Location location;
+
+    private  Location locationDetail;
     String coordonne;
 
     //Librarie a utilisé
@@ -42,18 +56,23 @@ public class LocationDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_location_detail);
         ButterKnife.bind(this);
 
+        this.mButtonRetirer.setVisibility(View.INVISIBLE);
+
+        gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+                .serializeNulls()
+                .create();
+
         Intent intent = getIntent();
-        location = (Location)intent.getSerializableExtra("location");
+        locationDetail = (Location)intent.getSerializableExtra("location");
 
-        for (Location.Indicateur i : location.getCountsByMeasurement()) {
-            mDetailIndicateur.append(i.getParameter() +" : "+i.getCount()+ "\n");
+        Location.Indicateur[] indic = gson.fromJson(locationDetail.indicateur, Location.Indicateur[].class);
+
+        for(Location.Indicateur i : indic) {
+            mDetailIndicateur.append(i.parameter +" : "+i.count+ "\n");
         }
+        mDetailLocations.append(locationDetail.location);
 
-        for(String l: location.getLocations()) {
-            mDetailLocations.append(l + "\n");
-        }
-
-        this.coordonne = this.location.getCoordinates().getLattitude()+","+this.location.getCoordinates().getLongitude();
+        this.coordonne = this.locationDetail.getCoordinates().getLatitude()+","+this.locationDetail.getCoordinates().getLongitude();
         Picasso.get().load("https://maps.googleapis.com/maps/api/streetview?size=400x400&location="+this.coordonne+"&fov=80&heading=70&pitch=&key=AIzaSyDWg17olhB-Wq9v5Cfg5a2YrmZSP7fhuvM")
                 .into(mDetailImage);
 
@@ -70,5 +89,31 @@ public class LocationDetailActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    @OnClick(R.id.detail_location_favoris)
+    public void addToFavoris() {
+        ActiveAndroid.beginTransaction();
+        try {
+            new Update(Location.class).set("favoris = 1")
+                    .where("identifiant = "+locationDetail.identifiant)
+                    .execute();
 
+        }finally {
+            ActiveAndroid.setTransactionSuccessful();
+            this.mFavorisButton.setVisibility(View.INVISIBLE);
+            this.mButtonRetirer.setVisibility(View.VISIBLE);
+        }
+        ActiveAndroid.endTransaction();
+
+    }
+
+
+    @OnClick(R.id.detail_location_favoris_retirer)
+    public void removeFromFavoris() {
+        new Update(Location.class).set("favoris = 0")
+                .where("identifiant = "+locationDetail.identifiant)
+                .execute();
+
+        this.mFavorisButton.setVisibility(View.VISIBLE);
+        this.mButtonRetirer.setVisibility(View.INVISIBLE);
+    }
 }

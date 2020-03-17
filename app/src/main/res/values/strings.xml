@@ -2,4 +2,5 @@
     <string name="app_name">projetandroid</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_map_zone">MapZoneActivity</string>
+    <string name="title_activity_favoris">FavorisActivity</string>
 </resources>
