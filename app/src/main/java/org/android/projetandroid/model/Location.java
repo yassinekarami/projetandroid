@@ -14,29 +14,25 @@ import java.util.List;
 public class Location extends Model implements Serializable {
 
 
-    @Expose
-    @Column(name="location")
-    public List<String> locations;
 
     @Expose
-    @Column(name="indicateur")
-    public List<Indicateur> countsByMeasurement;
+    public List<Indicateur> countsByMeasurement = new ArrayList<>();
+
+    @Expose
+    @Column(name="zone")
+    public String city;
+
+    @Column(name = "indicateur")
+    public String indicateur;
+
+    @Expose
+    @Column(name="location")
+    public String location;
 
     @Expose
     @Column(name="coordinates")
-    private Coordinates coordinates;
+    public Coordinates coordinates;
 
-    public Coordinates getCoordinates(){
-        return coordinates;
-    }
-
-    public List<String> getLocations() {
-        return locations;
-    }
-
-    public void setLocations(List<String> locations) {
-        this.locations = locations;
-    }
 
     public List<Indicateur> getCountsByMeasurement() {
         return countsByMeasurement;
@@ -46,12 +42,31 @@ public class Location extends Model implements Serializable {
         this.countsByMeasurement = countsByMeasurement;
     }
 
-    public class Indicateur implements Serializable{
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Coordinates getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(Coordinates coordinates) {
+        this.coordinates = coordinates;
+    }
+
+
+    public  class Indicateur extends Model implements Serializable{
 
         @Expose
+        @Column(name="parameter")
         public String parameter;
 
         @Expose
+        @Column(name="count")
         public int count;
 
         public String getParameter() {
@@ -71,30 +86,35 @@ public class Location extends Model implements Serializable {
         }
     }
 
-    public class Coordinates implements  Serializable{
+    public static class Coordinates extends Model implements  Serializable{
+
         @Expose
         @Column(name="longitude")
-        double longitude = 0;
+        public double longitude = 0;
 
         @Expose
         @Column(name="latitude")
-        double latitude = 0;
+        public double latitude = 0;
 
-        public double getLongitude(){
-            return this.longitude;
+
+        public double getLongitude() {
+            return longitude;
         }
 
-        public void setLongitude(double longitude){
+        public void setLongitude(double longitude) {
             this.longitude = longitude;
         }
 
-        public double getLattitude(){
-            return this.latitude;
+        public double getLatitude() {
+            return latitude;
         }
 
-        public void setLattitude(double latitude){
+        public void setLatitude(double latitude) {
             this.latitude = latitude;
         }
+
+
+
     }
 
 }

@@ -43,22 +43,28 @@ public class ZoneLocationActivity extends AppCompatActivity {
 
     private LocationAdapter mLocationAdapter;
 
+    private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone_location);
         ButterKnife.bind(this);
+
+        intent = getIntent();
+        if(intent != null  && intent.hasExtra("zone")) {
+            LocationSearchService.INSTANCE.searchLocation(intent.getStringExtra("zone"));
+        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        Intent intent = getIntent();
-        if(intent != null  && intent.hasExtra("zone")){
+        if (intent != null && intent.hasExtra("zone")) {
             EventBusManager.bus.register(this);
-            LocationSearchService.INSTANCE.searchLocation(intent.getStringExtra("zone"));
-
+            //  LocationSearchService.INSTANCE.searchLocation(intent.getStringExtra("zone"));
             mLocationAdapter = new LocationAdapter(this, new ArrayList<>());
             mLocationRecyclerView.setAdapter(mLocationAdapter);
             mLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -77,7 +83,7 @@ public class ZoneLocationActivity extends AppCompatActivity {
                 @Override
                 public void afterTextChanged(Editable s) {
                     mProgressBar.setVisibility(View.VISIBLE);
-                    LocationSearchService.INSTANCE.searchLocationFromDB(s.toString());
+                    LocationSearchService.INSTANCE.searchLocationFromDB(intent.getStringExtra("zone"), s.toString());
                 }
             });
         }

@@ -11,12 +11,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import org.android.projetandroid.LocationDetailActivity;
 import org.android.projetandroid.R;
 import org.android.projetandroid.ZoneLocationActivity;
 import org.android.projetandroid.model.Location;
+import org.json.JSONArray;
 
 
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,10 +35,16 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     private Activity context;
     private List<Location> mLocations;
 
+    Gson gson ;
+
     public LocationAdapter(Activity context, List<Location> locations){
         inflater = LayoutInflater.from(context);
         this.context = context;
         this.mLocations = locations;
+
+        gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+                .serializeNulls()
+                .create();
     }
 
     @NonNull
@@ -46,12 +59,14 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public void onBindViewHolder(@NonNull LocationAdapter.LocationViewHolder holder, int position) {
         final Location location = mLocations.get(position);
-        for (String l : location.getLocations()) {
-            holder.mLocationCityTextView.append(l+"\n");
-        }
-        for(Location.Indicateur i : location.getCountsByMeasurement()) {
+        holder.mLocationCityTextView.append(location.getLocation());
+        Location.Indicateur[] indic = gson.fromJson(location.indicateur, Location.Indicateur[].class);
+
+        for(Location.Indicateur i : indic) {
             holder.mLocationParameterTextView.setText(holder.mLocationParameterTextView.getText() + i.getParameter() +" : "+i.getCount()+ "\n");
         }
+
+
         holder.mLocationDetailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

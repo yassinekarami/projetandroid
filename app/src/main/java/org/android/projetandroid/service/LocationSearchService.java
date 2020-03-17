@@ -37,6 +37,8 @@ public class LocationSearchService {
     private ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
     private ScheduledFuture mLastScheduleTask;
 
+    Gson gson ;
+
     public LocationSearchService() {
         Gson gsonConverter = new GsonBuilder()
                 .excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
@@ -51,6 +53,10 @@ public class LocationSearchService {
                 .addConverterFactory(GsonConverterFactory.create(gsonConverter)).build();
 
         mLocationSearchRESTService = retrofit.create(LocationSearchRESTService.class);
+
+        gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+                .serializeNulls()
+                .create();
     }
 
     // recupère les locations de la zone passé en paramètre
@@ -62,38 +68,45 @@ public class LocationSearchService {
                     ActiveAndroid.beginTransaction();
                     try {
                         for(Location l : response.body().results) {
-                            l.save();
+
+                            Location loc = new Location();
+                            loc.location = l.location;
+                            loc.city = l.city;
+
+                            Location.Coordinates c = new Location.Coordinates();
+                            c.latitude = l.coordinates.latitude;
+                            c.longitude = l.coordinates.longitude;
+                            loc.coordinates = c;
+                            loc.coordinates.save();
+
+                            loc.indicateur = gson.toJson(l.countsByMeasurement);
+                            loc.save();
                         }
+                        ActiveAndroid.setTransactionSuccessful();
                     }
                     finally {
                         ActiveAndroid.endTransaction();
-                        searchLocationFromDB(zone);
+                        searchLocationFromDB(zone, "");
                     }
-
-                    EventBusManager.bus.post(new SearchLocationResultEvent(response.body().results));
                 }
             }
 
             @Override
             public void onFailure(Call<LocationResult> call, Throwable t) {
-               allLocationFromDB(zone);
+                searchLocationFromDB(zone, "");
             }
         });
     }
 
-    private void allLocationFromDB (final String location) {
-        List<Location> locations = new Select().from(Location.class)
-                .execute();
 
-        EventBusManager.bus.post(new SearchLocationResultEvent(locations));
-    }
-    public void searchLocationFromDB(String search) {
+    public void searchLocationFromDB(String zone, String search) {
         if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
             mLastScheduleTask.cancel(true);
         }
         mLastScheduleTask = mScheduler.schedule(new Runnable() {
             public void run() {
                 List<Location> matchingLocationFromBD = new Select().from(Location.class)
+                        .where("zone LIKE '%" + zone + "%'")
                         .where("location LIKE '%" + search + "%'")
                         .orderBy("location")
                         .execute();
@@ -105,7 +118,7 @@ public class LocationSearchService {
 
     public interface LocationSearchRESTService {
         @GET("locations")
-        Call<LocationResult> listLocation(@Query("country") String country, @Query("city") String location);
+        Call<LocationResult> listLocation(@Query("country") String country, @Query("city") String zone);
 
     }
 }
