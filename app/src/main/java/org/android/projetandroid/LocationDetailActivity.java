@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.android.projetandroid.model.Location;
 
@@ -56,14 +57,24 @@ public class LocationDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_location_detail);
         ButterKnife.bind(this);
 
-        this.mButtonRetirer.setVisibility(View.INVISIBLE);
+        Intent intent = getIntent();
+        locationDetail = (Location)intent.getSerializableExtra("location");
+
+        // si la location est en favoris
+        if (locationDetail.favoris) {
+            this.mFavorisButton.setVisibility(View.INVISIBLE);
+            this.mButtonRetirer.setVisibility(View.VISIBLE);
+        }
+        // la location n'est pas en favoris
+        else {
+
+            this.mFavorisButton.setVisibility(View.VISIBLE);
+            this.mButtonRetirer.setVisibility(View.INVISIBLE);
+        }
 
         gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                 .serializeNulls()
                 .create();
-
-        Intent intent = getIntent();
-        locationDetail = (Location)intent.getSerializableExtra("location");
 
         Location.Indicateur[] indic = gson.fromJson(locationDetail.indicateur, Location.Indicateur[].class);
 
@@ -97,6 +108,8 @@ public class LocationDetailActivity extends AppCompatActivity {
                     .where("identifiant = "+locationDetail.identifiant)
                     .execute();
 
+            Toast.makeText(getApplicationContext(), "Location ajouté aux favoris", Toast.LENGTH_SHORT).show();
+
         }finally {
             ActiveAndroid.setTransactionSuccessful();
             this.mFavorisButton.setVisibility(View.INVISIBLE);
@@ -109,11 +122,21 @@ public class LocationDetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.detail_location_favoris_retirer)
     public void removeFromFavoris() {
-        new Update(Location.class).set("favoris = 0")
-                .where("identifiant = "+locationDetail.identifiant)
-                .execute();
+        ActiveAndroid.beginTransaction();
+        try {
+            new Update(Location.class).set("favoris = 0")
+                    .where("identifiant = "+locationDetail.identifiant)
+                    .execute();
 
-        this.mFavorisButton.setVisibility(View.VISIBLE);
-        this.mButtonRetirer.setVisibility(View.INVISIBLE);
+            Toast.makeText(getApplicationContext(), "Location retiré aux favoris", Toast.LENGTH_SHORT).show();
+        }finally {
+            ActiveAndroid.setTransactionSuccessful();
+            this.mFavorisButton.setVisibility(View.VISIBLE);
+            this.mButtonRetirer.setVisibility(View.INVISIBLE);
+        }
+        ActiveAndroid.endTransaction();
+
+
+
     }
 }
