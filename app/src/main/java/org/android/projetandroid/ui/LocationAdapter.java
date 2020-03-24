@@ -59,11 +59,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public void onBindViewHolder(@NonNull LocationAdapter.LocationViewHolder holder, int position) {
         final Location location = mLocations.get(position);
-        holder.mLocationCityTextView.append(location.getLocation());
+        holder.mLocationCityTextView.setText(location.getLocation());
         Location.Indicateur[] indic = gson.fromJson(location.indicateur, Location.Indicateur[].class);
 
         for(Location.Indicateur i : indic) {
-            holder.mLocationParameterTextView.setText(holder.mLocationParameterTextView.getText() + i.getParameter() +" : "+i.getCount()+ "\n");
+            holder.mLocationParameterTextView.setText(i.getParameter() +" : "+i.getCount()+ "\n");
         }
 
 
