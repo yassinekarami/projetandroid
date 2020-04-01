@@ -18,14 +18,18 @@ import com.squareup.otto.Subscribe;
 
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchLocationResultEvent;
+import org.android.projetandroid.event.SearchMeasurementResultEvent;
 import org.android.projetandroid.event.SearchResultEvent;
 import org.android.projetandroid.model.Location;
+import org.android.projetandroid.model.Measurement;
 import org.android.projetandroid.service.LocationSearchService;
 import org.android.projetandroid.service.ZoneSearchService;
 import org.android.projetandroid.ui.LocationAdapter;
 import org.android.projetandroid.ui.ZoneAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +48,7 @@ public class ZoneLocationActivity extends AppCompatActivity {
     private LocationAdapter mLocationAdapter;
 
     private Intent intent;
+    private List<Location> location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +69,6 @@ public class ZoneLocationActivity extends AppCompatActivity {
 
         if (intent != null && intent.hasExtra("zone")) {
             EventBusManager.bus.register(this);
-            //  LocationSearchService.INSTANCE.searchLocation(intent.getStringExtra("zone"));
             mLocationAdapter = new LocationAdapter(this, new ArrayList<>());
             mLocationRecyclerView.setAdapter(mLocationAdapter);
             mLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -106,6 +110,28 @@ public class ZoneLocationActivity extends AppCompatActivity {
             mLocationAdapter.notifyDataSetChanged();
 
             mProgressBar.setVisibility(View.GONE);
+
+            location = event.getLocation();
+            for(Location l : event.getLocation()) {
+                LocationSearchService.INSTANCE.searchMeasurement(intent.getStringExtra("zone"), l.location);
+            }
+        });
+    }
+
+    @Subscribe
+    public void searchResult(final SearchMeasurementResultEvent event) {
+        runOnUiThread(() -> {
+            HashMap<String, String> measurementHashmap = new HashMap<String, String>();
+            for(Measurement m : event.getMeasurements())
+            {
+                if(m.location != null && m.mesurement != null) {
+                    measurementHashmap.put(m.location, m.mesurement);
+                }
+            }
+            if(!measurementHashmap.isEmpty()) {
+                mLocationAdapter.setMeasurements(measurementHashmap);
+                mLocationAdapter.notifyDataSetChanged();
+            }
 
         });
     }

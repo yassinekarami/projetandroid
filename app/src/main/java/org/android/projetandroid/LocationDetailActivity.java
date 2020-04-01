@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.android.projetandroid.model.Location;
+import org.android.projetandroid.model.Measurement;
 
 import java.lang.reflect.Modifier;
 
@@ -28,6 +29,7 @@ import butterknife.OnClick;
 public class LocationDetailActivity extends AppCompatActivity {
 
     Gson gson ;
+    String measurements;
 
     @BindView(R.id.detail_location_favoris)
     Button mFavorisButton;
@@ -41,11 +43,13 @@ public class LocationDetailActivity extends AppCompatActivity {
     @BindView(R.id.detail_location_locations)
     TextView mDetailLocations;
 
+    @BindView(R.id.detail_location_measurements)
+    TextView mMeasurementLocations;
+
     @BindView(R.id.detail_location_image)
     ImageView mDetailImage;
 
-
-    private  Location locationDetail;
+    private Location locationDetail;
     String coordonne;
 
     //Librarie a utilisé
@@ -57,8 +61,21 @@ public class LocationDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_location_detail);
         ButterKnife.bind(this);
 
+        gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+                .serializeNulls()
+                .create();
+
         Intent intent = getIntent();
         locationDetail = (Location)intent.getSerializableExtra("location");
+        measurements = intent.getStringExtra("measurements");
+
+        if(measurements != null) {
+
+            Measurement[] locationMeasurements = gson.fromJson(measurements, Measurement[].class);
+            for(Measurement m : locationMeasurements) {
+              mMeasurementLocations.append(m.parameter+" : "+m.value +" "+m.unit+"\n");
+            }
+        }
 
         // si la location est en favoris
         if (locationDetail.favoris) {
@@ -71,10 +88,6 @@ public class LocationDetailActivity extends AppCompatActivity {
             this.mFavorisButton.setVisibility(View.VISIBLE);
             this.mButtonRetirer.setVisibility(View.INVISIBLE);
         }
-
-        gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
-                .serializeNulls()
-                .create();
 
         Location.Indicateur[] indic = gson.fromJson(locationDetail.indicateur, Location.Indicateur[].class);
 

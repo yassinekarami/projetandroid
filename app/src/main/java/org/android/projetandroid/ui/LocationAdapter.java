@@ -19,11 +19,13 @@ import org.android.projetandroid.LocationDetailActivity;
 import org.android.projetandroid.R;
 import org.android.projetandroid.ZoneLocationActivity;
 import org.android.projetandroid.model.Location;
+import org.android.projetandroid.model.Measurement;
 import org.json.JSONArray;
 
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,6 +37,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     private Activity context;
     private List<Location> mLocations;
 
+    // string sera le code de la location
+    private HashMap<String, String> mMeasurements;
+    private  Measurement[] mes = null;
     Gson gson ;
 
     public LocationAdapter(Activity context, List<Location> locations){
@@ -59,14 +64,23 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public void onBindViewHolder(@NonNull LocationAdapter.LocationViewHolder holder, int position) {
         final Location location = mLocations.get(position);
+
         holder.mLocationCityTextView.setText(location.getLocation());
         Location.Indicateur[] indic = gson.fromJson(location.indicateur, Location.Indicateur[].class);
 
-        for(Location.Indicateur i : indic) {
-            holder.mLocationParameterTextView.setText(i.getParameter() +" : "+i.getCount()+ "\n");
+        for(Location.Indicateur i : indic) {  // le nombre de mesure qui a été fait pour chaque paramètre
+          //  holder.mLocationParameterTextView.setText(i.getParameter() +" : "+i.getCount()+ "\n");
         }
 
+        if(mMeasurements != null) {
+            mes = gson.fromJson(mMeasurements.get(location.getLocation()), Measurement[].class);
+            if(mes != null) {
+                for(Measurement m : mes) {
+                    holder.mLocationMeasurementTextView.append(m.parameter+" : "+m.value +" "+m.unit+"\n");
+                }
+            }
 
+        }
         holder.mLocationDetailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +88,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
                 Intent seeLocationDetailActivity = new Intent(context, LocationDetailActivity.class);
                 seeLocationDetailActivity.putExtra("location", location);
+                seeLocationDetailActivity.putExtra("measurements", mMeasurements.get(location.getLocation()));
                 context.startActivity(seeLocationDetailActivity);
             }
         });
@@ -89,6 +104,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         this.mLocations = locations;
     }
 
+    public void setMeasurements(HashMap<String, String> measurements) { this.mMeasurements = measurements;}
+
 
     class LocationViewHolder extends RecyclerView.ViewHolder {
 
@@ -97,6 +114,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
         @BindView(R.id.location_adapter_locations)
         TextView mLocationCityTextView;
+
+        @BindView(R.id.location_adapter_measurements)
+        TextView mLocationMeasurementTextView;
 
         @BindView(R.id.location_adapter_detail)
         Button mLocationDetailButton;

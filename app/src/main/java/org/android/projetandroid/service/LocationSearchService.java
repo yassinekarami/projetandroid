@@ -7,12 +7,16 @@ import com.google.gson.GsonBuilder;
 
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchLocationResultEvent;
+import org.android.projetandroid.event.SearchMeasurementResultEvent;
 import org.android.projetandroid.event.SearchResultEvent;
 import org.android.projetandroid.model.Location;
 import org.android.projetandroid.model.LocationResult;
+import org.android.projetandroid.model.Measurement;
+import org.android.projetandroid.model.MeasurementResult;
 import org.android.projetandroid.model.Zone;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -37,7 +41,10 @@ public class LocationSearchService {
     private ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
     private ScheduledFuture mLastScheduleTask;
 
-    Gson gson ;
+    private String locName = "";
+    private List<Measurement.Values> mesList = new ArrayList<>(); // liste pour enregistrer toute les valeurs des mesures
+
+    private Gson gson ;
 
     public LocationSearchService() {
         Gson gsonConverter = new GsonBuilder()
@@ -101,6 +108,60 @@ public class LocationSearchService {
         });
     }
 
+    public void searchMeasurement(final String zone, final String location) {
+        mLocationSearchRESTService.listMeasurement("FR", zone, location).enqueue(new Callback<MeasurementResult>() {
+            @Override
+            public void onResponse(Call<MeasurementResult> call, Response<MeasurementResult> response) {
+                if(response.body() != null && response.body().results != null) {
+                    ActiveAndroid.beginTransaction();
+                    try{
+
+                        for (Measurement m : response.body().results) {
+                            // initialisation du nom de la localité
+                            if(locName.equals("")) {
+                                locName = m.location;
+                            }
+                            // si les deux on le meme nom il s'agit alors de la même zone
+                            else if(locName.equals(m.location)) {
+                                Measurement.Values v = new Measurement.Values(m.parameter, m.unit, m.value);
+                                mesList.add(v);
+                            }
+                            // sinon on a changer de zone
+                            else {
+                                String mesureamentString = gson.toJson(mesList);
+                                Measurement mes = new Measurement(m.location, mesureamentString);
+                                mes.save();
+                                // on change le nom de la location
+                                locName = m.location;
+                                mesList.clear();
+                            }
+                        }
+                        ActiveAndroid.setTransactionSuccessful();
+                    }finally {
+                        ActiveAndroid.endTransaction();
+                        searchMeasurementFromDB(location);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MeasurementResult> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void searchMeasurementFromDB(String location) {
+        List<Measurement> matchingMeasurementFromDB = new Select().from(Measurement.class)
+             //   .where("location LIKE '%" + location + "%'")
+                .where("location = ?", location)
+                .orderBy("location")
+                .execute();
+
+        EventBusManager.bus.post(new SearchMeasurementResultEvent(matchingMeasurementFromDB));
+
+    }
 
     public void searchLocationFromDB(String zone, String search) {
         if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
@@ -109,8 +170,8 @@ public class LocationSearchService {
         mLastScheduleTask = mScheduler.schedule(new Runnable() {
             public void run() {
                 List<Location> matchingLocationFromBD = new Select().from(Location.class)
-                        .where("zone LIKE '%" + zone + "%'")
-                        .where("location LIKE '%" + search + "%'")
+                        .where("zone = ? ", zone)
+                        .where("location LIKE '%" + search +"%'" )
                         .orderBy("location")
                         .execute();
 
@@ -139,5 +200,7 @@ public class LocationSearchService {
         @GET("locations")
         Call<LocationResult> listLocation(@Query("country") String country, @Query("city") String zone);
 
+        @GET("measurements")
+        Call<MeasurementResult> listMeasurement(@Query("country") String country, @Query("city") String zone, @Query("location") String location);
     }
 }
