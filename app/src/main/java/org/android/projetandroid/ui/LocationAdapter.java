@@ -84,11 +84,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         holder.mLocationDetailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                
                 Intent seeLocationDetailActivity = new Intent(context, LocationDetailActivity.class);
                 seeLocationDetailActivity.putExtra("location", location);
-                seeLocationDetailActivity.putExtra("measurements", mMeasurements.get(location.getLocation()));
                 context.startActivity(seeLocationDetailActivity);
             }
         });

@@ -7,18 +7,23 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Update;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.EdgeEffect;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.android.projetandroid.event.EventBusManager;
+import org.android.projetandroid.event.SearchMeasurementResultEvent;
 import org.android.projetandroid.model.Location;
 import org.android.projetandroid.model.Measurement;
+import org.android.projetandroid.service.LocationSearchService;
 
 import java.lang.reflect.Modifier;
 
@@ -29,7 +34,6 @@ import butterknife.OnClick;
 public class LocationDetailActivity extends AppCompatActivity {
 
     Gson gson ;
-    String measurements;
 
     @BindView(R.id.detail_location_favoris)
     Button mFavorisButton;
@@ -61,21 +65,15 @@ public class LocationDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_location_detail);
         ButterKnife.bind(this);
 
-        gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+        this.gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                 .serializeNulls()
                 .create();
 
         Intent intent = getIntent();
         locationDetail = (Location)intent.getSerializableExtra("location");
-        measurements = intent.getStringExtra("measurements");
 
-        if(measurements != null) {
-
-            Measurement[] locationMeasurements = gson.fromJson(measurements, Measurement[].class);
-            for(Measurement m : locationMeasurements) {
-              mMeasurementLocations.append(m.parameter+" : "+m.value +" "+m.unit+"\n");
-            }
-        }
+        EventBusManager.bus.register(this);
+        LocationSearchService.INSTANCE.searchMeasurementFromDB(locationDetail.location);
 
         // si la location est en favoris
         if (locationDetail.favoris) {
@@ -89,7 +87,7 @@ public class LocationDetailActivity extends AppCompatActivity {
             this.mButtonRetirer.setVisibility(View.INVISIBLE);
         }
 
-        Location.Indicateur[] indic = gson.fromJson(locationDetail.indicateur, Location.Indicateur[].class);
+        Location.Indicateur[] indic = this.gson.fromJson(locationDetail.indicateur, Location.Indicateur[].class);
 
         for(Location.Indicateur i : indic) {
             mDetailIndicateur.append(i.parameter +" : "+i.count+ "\n");
@@ -105,6 +103,7 @@ public class LocationDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        EventBusManager.bus.unregister(this);
         super.onPause();
     }
 
@@ -148,8 +147,21 @@ public class LocationDetailActivity extends AppCompatActivity {
             this.mButtonRetirer.setVisibility(View.INVISIBLE);
         }
         ActiveAndroid.endTransaction();
+    }
 
+    @Subscribe
+    public void  searchResult(final SearchMeasurementResultEvent event) {
 
+        // Here someone has posted a SearchResultEvent
+        runOnUiThread (() -> {
+            // Step 1: Update adapter's model
+            for(Measurement m : event.getMeasurements()) {
+                Measurement.Values[] values = this.gson.fromJson(m.mesurement, Measurement.Values[].class);
+                for (Measurement.Values v: values) {
+                    mMeasurementLocations.append(v.getParameter()+" : "+v.getValue() +" "+v.getUnit()+"\n");
+                }
 
+            }
+        });
     }
 }

@@ -17,7 +17,6 @@ import org.android.projetandroid.model.MeasurementResult;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -180,7 +179,6 @@ public class LocationSearchService {
 
     public void searchMeasurementFromDB(String location) {
         List<Measurement> matchingMeasurementFromDB = new Select().from(Measurement.class)
-             //   .where("location LIKE '%" + location + "%'")
                 .where("location = ?", location)
                 .orderBy("location")
                 .execute();
