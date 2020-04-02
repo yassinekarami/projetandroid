@@ -8,20 +8,22 @@ import com.google.gson.GsonBuilder;
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchLocationResultEvent;
 import org.android.projetandroid.event.SearchMeasurementResultEvent;
-import org.android.projetandroid.event.SearchResultEvent;
 import org.android.projetandroid.model.Location;
 import org.android.projetandroid.model.LocationResult;
 import org.android.projetandroid.model.Measurement;
 import org.android.projetandroid.model.MeasurementResult;
-import org.android.projetandroid.model.Zone;
+
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.HashSet;
+
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -109,7 +111,16 @@ public class LocationSearchService {
     }
 
     public void searchMeasurement(final String zone, final String location) {
-        mLocationSearchRESTService.listMeasurement("FR", zone, location).enqueue(new Callback<MeasurementResult>() {
+        mLocationSearchRESTService.listMeasurement("FR", zone, location,
+                "pm25",
+                "pm10",
+                "so2",
+                "no2",
+                "o3",
+                "co",
+                "cb",
+                "date",
+                "7").enqueue(new Callback<MeasurementResult>() {
             @Override
             public void onResponse(Call<MeasurementResult> call, Response<MeasurementResult> response) {
                 if(response.body() != null && response.body().results != null) {
@@ -128,6 +139,11 @@ public class LocationSearchService {
                             }
                             // sinon on a changer de zone
                             else {
+                                // suppression des mesures ayant le meme paramètre
+                                HashSet<Object> v =new HashSet<>();
+                                mesList.removeIf(e->!v.add(e.getParameter()));
+
+                                // conversion de la liste de mesure en json
                                 String mesureamentString = gson.toJson(mesList);
                                 Measurement mes = new Measurement(m.location, mesureamentString);
                                 mes.save();
@@ -135,6 +151,7 @@ public class LocationSearchService {
                                 locName = m.location;
                                 mesList.clear();
                             }
+
                         }
                         ActiveAndroid.setTransactionSuccessful();
                     }finally {
@@ -201,6 +218,18 @@ public class LocationSearchService {
         Call<LocationResult> listLocation(@Query("country") String country, @Query("city") String zone);
 
         @GET("measurements")
-        Call<MeasurementResult> listMeasurement(@Query("country") String country, @Query("city") String zone, @Query("location") String location);
+        Call<MeasurementResult> listMeasurement(@Query("country") String country,
+                                                @Query("city") String zone,
+                                                @Query("location") String location,
+                                                @Query("parameter[]") String param1,
+                                                @Query("parameter[]") String param2,
+                                                @Query("parameter[]") String param3,
+                                                @Query("parameter[]") String param4,
+                                                @Query("parameter[]") String param5,
+                                                @Query("parameter[]") String param6,
+                                                @Query("parameter[]") String param7,
+                                                @Query("order_by") String order,
+                                                @Query("limit") String limit
+        );
     }
 }
