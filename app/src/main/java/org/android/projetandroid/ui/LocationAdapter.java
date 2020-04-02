@@ -75,9 +75,12 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         if(mMeasurements != null) {
             mes = gson.fromJson(mMeasurements.get(location.getLocation()), Measurement[].class);
             if(mes != null) {
+                String mesures = "";
                 for(Measurement m : mes) {
-                    holder.mLocationMeasurementTextView.append(m.parameter+" : "+m.value +" "+m.unit+"\n");
+                    mesures = mesures +"\n"+ m.parameter+" : "+m.value +" "+m.unit;
                 }
+               // holder.mLocationMeasurementTextView.append(m.parameter+" : "+m.value +" "+m.unit+"\n");
+                holder.mLocationMeasurementTextView.setText(mesures);
             }
 
         }

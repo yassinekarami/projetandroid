@@ -44,7 +44,7 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
     @Override
     public void onBindViewHolder(@NonNull ZoneViewHolder holder, int position) {
         final Zone zone = mZones.get(position);
-        holder.mZoneCountryTextView.setText(zone.getCountry());
+      //  holder.mZoneCountryTextView.setText(zone.getCountry());
         holder.mZoneCityTextView.setText(zone.getCity());
         holder.mZoneNameTextView.setText(zone.getName());
         holder.mZoneCountTextView.setText(Integer.toString(zone.getCount()));
@@ -71,8 +71,8 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
 
     class ZoneViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.zone_adapter_country)
-        TextView mZoneCountryTextView;
+       // @BindView(R.id.zone_adapter_country)
+       // TextView mZoneCountryTextView;
 
         @BindView(R.id.zone_adapter_city)
         TextView mZoneCityTextView;
