@@ -151,7 +151,16 @@ public class LocationSearchService {
                                 locName = m.location;
                                 mesList.clear();
                             }
+                            // verification de l'index de l'object courant et de la taille de la list de réponse
+                            if(response.body().results.indexOf(m) == response.body().results.size() -1) {
 
+                                // suppression des mesures ayant le meme paramètre
+                                HashSet<Object> v =new HashSet<>();
+                                mesList.removeIf(e->!v.add(e.getParameter()));
+                                String mesureamentString = gson.toJson(mesList);
+                                Measurement mes = new Measurement(m.location, mesureamentString);
+                                mes.save();
+                            }
                         }
                         ActiveAndroid.setTransactionSuccessful();
                     }finally {
@@ -164,7 +173,7 @@ public class LocationSearchService {
 
             @Override
             public void onFailure(Call<MeasurementResult> call, Throwable t) {
-
+                searchMeasurementFromDB(location);
             }
         });
     }

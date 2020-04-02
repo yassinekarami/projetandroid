@@ -8,7 +8,7 @@ import com.google.gson.annotations.Expose;
 @Table(name = "mesures")
 public class Measurement extends Model {
     @Expose
-    @Column(name="location")
+    @Column(name="location", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     public String location;
 
     @Column(name="measurement")
