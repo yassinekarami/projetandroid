@@ -72,8 +72,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
           //  holder.mLocationParameterTextView.setText(i.getParameter() +" : "+i.getCount()+ "\n");
         }
 
-        if(mMeasurements != null) {
+        if(location.measurement != null) {
             mes = gson.fromJson(mMeasurements.get(location.getLocation()), Measurement[].class);
+           // mes = gson.fromJson(location.measurement, Measurement[].class);
             if(mes != null) {
                 String mesures = "";
                 for(Measurement m : mes) {
@@ -105,7 +106,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         this.mLocations = locations;
     }
 
-    public void setMeasurements(HashMap<String, String> measurements) { this.mMeasurements = measurements;}
+  //  public void setMeasurements(HashMap<String, String> measurements) { this.mMeasurements = measurements;}
 
 
     class LocationViewHolder extends RecyclerView.ViewHolder {

@@ -2,6 +2,7 @@ package org.android.projetandroid.service;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
+import com.activeandroid.query.Update;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -23,7 +24,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.HashSet;
 
-
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,8 +42,10 @@ public class LocationSearchService {
     private ScheduledExecutorService mScheduler = Executors.newScheduledThreadPool(1);
     private ScheduledFuture mLastScheduleTask;
 
+    // liste pour enregistrer toute les valeurs des mesures
+    private List<Measurement.Values> mesList = new ArrayList<>();
+
     private String locName = "";
-    private List<Measurement.Values> mesList = new ArrayList<>(); // liste pour enregistrer toute les valeurs des mesures
 
     private Gson gson ;
 
@@ -88,7 +90,6 @@ public class LocationSearchService {
                             loc.coordinates.save();
 
                             loc.favoris = false;
-                            loc.identifiant = (long)(Math.random() * ( 9999999 - 1 ));
 
                             loc.indicateur = gson.toJson(l.countsByMeasurement);
                             loc.save();
@@ -128,6 +129,7 @@ public class LocationSearchService {
 
                         for (Measurement m : response.body().results) {
                             // initialisation du nom de la localité
+
                             if(locName.equals("")) {
                                 locName = m.location;
                             }
@@ -144,6 +146,7 @@ public class LocationSearchService {
 
                                 // conversion de la liste de mesure en json
                                 String mesureamentString = gson.toJson(mesList);
+                                new Update(Location.class).set("measurement = ? ",mesureamentString).where("location = "+ "'"+m.location+"'").execute();
                                 Measurement mes = new Measurement(m.location, mesureamentString);
                                 mes.save();
                                 // on change le nom de la location
@@ -166,7 +169,6 @@ public class LocationSearchService {
                         ActiveAndroid.endTransaction();
                         searchMeasurementFromDB(location);
                     }
-
                 }
             }
 
@@ -187,6 +189,8 @@ public class LocationSearchService {
 
     }
 
+
+    // recherche des locations pour l'activité LOCATION
     public void searchLocationFromDB(String zone, String search) {
         if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
             mLastScheduleTask.cancel(true);
@@ -213,6 +217,28 @@ public class LocationSearchService {
                 List<Location> matchingLocationFromBD = new Select().from(Location.class)
                         .where("favoris = 1")
                         .orderBy("location")
+                        .execute();
+
+                EventBusManager.bus.post(new SearchLocationResultEvent(matchingLocationFromBD));
+            }
+        }, REFRESH_DELAY, TimeUnit.MILLISECONDS);
+    }
+
+
+    // recherche des locations pour l'activité RECHERCHE
+    public void searchRechercheLocationFromDB(String zone, String search, String param, String value) {
+        if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
+            mLastScheduleTask.cancel(true);
+        }
+        mLastScheduleTask = mScheduler.schedule(new Runnable() {
+            public void run() {
+                // récupère les locations en base de donnée
+                List<Location> matchingLocationFromBD = new Select().from(Location.class)
+                        .innerJoin(Measurement.class)
+                        .on("mesures.location=Locations.location")
+                        .where("Locations.zone LIKE '%" + zone +"%'" )
+                        .where("Locations.location LIKE '%" + search +"%'" )
+                        .orderBy("Locations.location")
                         .execute();
 
                 EventBusManager.bus.post(new SearchLocationResultEvent(matchingLocationFromBD));

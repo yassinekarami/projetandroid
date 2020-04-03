@@ -117,7 +117,7 @@ public class LocationDetailActivity extends AppCompatActivity {
         ActiveAndroid.beginTransaction();
         try {
             new Update(Location.class).set("favoris = 1")
-                    .where("identifiant = "+locationDetail.identifiant)
+                    .where("location =  '"+locationDetail.location+"'")
                     .execute();
 
             Toast.makeText(getApplicationContext(), "Location ajouté aux favoris", Toast.LENGTH_SHORT).show();
@@ -137,7 +137,7 @@ public class LocationDetailActivity extends AppCompatActivity {
         ActiveAndroid.beginTransaction();
         try {
             new Update(Location.class).set("favoris = 0")
-                    .where("identifiant = "+locationDetail.identifiant)
+                    .where("location =  '"+locationDetail.location+"'")
                     .execute();
 
             Toast.makeText(getApplicationContext(), "Location retiré aux favoris", Toast.LENGTH_SHORT).show();

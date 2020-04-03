@@ -4,4 +4,13 @@
     <string name="title_activity_map_zone">MapZoneActivity</string>
     <string name="title_activity_favoris">FavorisActivity</string>
     <string name="detail_bouton">Détail</string>
+    <string name="liste_des_zones">Liste des zones</string>
+    <string name="carte_des_zone">Carte des zone</string>
+    <string name="locations_favorites">Locations favorites</string>
+    <string name="recherche">Recherche</string>
+    <string name="title_activity_recherche_activty">RechercheActivty</string>
+    <string name="par_zone">Par zone</string>
+    <string name="par_location">Par location</string>
+    <string name="parametre">Paramètre</string>
+    <string name="parametre_value">Valeur</string>
 </resources>

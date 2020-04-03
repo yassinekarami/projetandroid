@@ -111,17 +111,22 @@ public class ZoneLocationActivity extends AppCompatActivity {
 
             mProgressBar.setVisibility(View.GONE);
 
-            location = event.getLocation();
+
+             location = event.getLocation();
             for(Location l : event.getLocation()) {
                 LocationSearchService.INSTANCE.searchMeasurement(intent.getStringExtra("zone"), l.location);
             }
+
+
         });
     }
 
     @Subscribe
     public void searchResult(final SearchMeasurementResultEvent event) {
-        runOnUiThread(() -> {
-            HashMap<String, String> measurementHashmap = new HashMap<String, String>();
+
+  runOnUiThread(() -> {
+      /*
+        HashMap<String, String> measurementHashmap = new HashMap<String, String>();
             for(Measurement m : event.getMeasurements())
             {
                 if(m.location != null && m.mesurement != null) {
@@ -132,8 +137,17 @@ public class ZoneLocationActivity extends AppCompatActivity {
                 mLocationAdapter.setMeasurements(measurementHashmap);
                 mLocationAdapter.notifyDataSetChanged();
             }
+       */
+
+            if(!event.getMeasurements().isEmpty())
+            {
+            //    mLocationAdapter.setMeasurements(measurementHashmap);
+                mLocationAdapter.notifyDataSetChanged();
+            }
 
         });
+
+
     }
 
 }

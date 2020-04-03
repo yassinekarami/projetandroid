@@ -23,10 +23,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".RechercheActivty"
+            android:label="@string/title_activity_recherche_activty"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".FavorisActivity"
             android:label="@string/title_activity_favoris"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <!-- google map meta data -->
+            android:theme="@style/AppTheme.NoActionBar" /> <!-- google map meta data -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBcRt3W8uifSjrhXBu2467iz9ciQqMNTzM" />

@@ -20,7 +20,7 @@
             android:id="@+id/btnListActivity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Liste des zones"
+            android:text="@string/liste_des_zones"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +30,7 @@
             android:id="@+id/btnMapActivity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Carte des zone"
+            android:text="@string/carte_des_zone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.503"
@@ -42,11 +42,23 @@
             android:id="@+id/btnFavorisActivity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Locations favorites"
+            android:text="@string/locations_favorites"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnRechercheActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recherche"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
 
     </LinearLayout>
 
