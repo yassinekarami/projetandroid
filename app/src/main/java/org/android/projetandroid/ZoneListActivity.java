@@ -2,14 +2,9 @@ package org.android.projetandroid;
 
 import android.os.Bundle;
 
-import com.activeandroid.ActiveAndroid;
-import com.activeandroid.query.Delete;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.squareup.otto.Subscribe;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +16,6 @@ import android.widget.ProgressBar;
 
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchResultEvent;
-import org.android.projetandroid.model.Zone;
 import org.android.projetandroid.service.ZoneSearchService;
 import org.android.projetandroid.ui.ZoneAdapter;
 

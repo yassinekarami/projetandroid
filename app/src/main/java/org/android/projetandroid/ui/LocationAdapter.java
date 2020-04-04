@@ -66,7 +66,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
         final Location location = mLocations.get(position);
 
         holder.mLocationZoneTextView.setText(location.city);
-        holder.mLocationCityTextView.setText(location.getLocation());
+        holder.mLocationCityTextView.setText(location.location);
         Location.Indicateur[] indic = gson.fromJson(location.indicateur, Location.Indicateur[].class);
 
         if(mMeasurements != null) {

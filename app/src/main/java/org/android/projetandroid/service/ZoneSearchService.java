@@ -5,7 +5,6 @@ import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.android.projetandroid.ZoneListActivity;
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchResultEvent;
 import org.android.projetandroid.model.Zone;

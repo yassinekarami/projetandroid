@@ -45,12 +45,6 @@ public class Measurement extends Model {
         public Values() {
             super();
         }
-        public Values(String parameter, String unit, double value) {
-            super();
-            this.parameter = parameter;
-            this.unit = unit;
-            this.value = value;
-        }
 
     }
 

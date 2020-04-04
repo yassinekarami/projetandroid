@@ -12,20 +12,16 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchLocationResultEvent;
 import org.android.projetandroid.event.SearchMeasurementResultEvent;
-import org.android.projetandroid.event.SearchResultEvent;
 import org.android.projetandroid.model.Location;
 import org.android.projetandroid.model.Measurement;
 import org.android.projetandroid.service.LocationSearchService;
-import org.android.projetandroid.service.ZoneSearchService;
 import org.android.projetandroid.ui.LocationAdapter;
-import org.android.projetandroid.ui.ZoneAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

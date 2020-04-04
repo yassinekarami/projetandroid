@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
 import android.widget.Button;
-import android.widget.EdgeEffect;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,7 +93,7 @@ public class LocationDetailActivity extends AppCompatActivity {
         }
         mDetailLocations.append(locationDetail.location);
 
-        this.coordonne = this.locationDetail.getCoordinates().getLatitude()+","+this.locationDetail.getCoordinates().getLongitude();
+        this.coordonne = this.locationDetail.coordinates.latitude+","+this.locationDetail.coordinates.longitude;
         Picasso.get().load("https://maps.googleapis.com/maps/api/streetview?size=400x400&location="+this.coordonne+"&fov=80&heading=70&pitch=&key=AIzaSyDWg17olhB-Wq9v5Cfg5a2YrmZSP7fhuvM")
                 .into(mDetailImage);
 

@@ -2,27 +2,18 @@ package org.android.projetandroid;
 
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.squareup.otto.Subscribe;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 
 import org.android.projetandroid.event.EventBusManager;
-import org.android.projetandroid.event.SearchLocationResultEvent;
 import org.android.projetandroid.event.SearchMeasurementResultEvent;
 import org.android.projetandroid.model.Location;
 import org.android.projetandroid.model.Measurement;
@@ -30,14 +21,12 @@ import org.android.projetandroid.service.LocationSearchService;
 import org.android.projetandroid.ui.LocationAdapter;
 
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnItemSelected;
 
 public class RechercheActivty extends AppCompatActivity {
 
@@ -81,8 +70,6 @@ public class RechercheActivty extends AppCompatActivity {
 
 
     HashMap<String, Float> paramHashMap;
-    List<Location> mLocationList;
-    Location currentLocation;
     private LocationAdapter mLocationAdapter;
 
 

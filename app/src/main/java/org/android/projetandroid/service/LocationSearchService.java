@@ -1,10 +1,8 @@
 package org.android.projetandroid.service;
 
-import android.renderscript.ScriptIntrinsicYuvToRGB;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
-import com.activeandroid.query.Update;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -19,9 +17,7 @@ import org.android.projetandroid.model.MeasurementResult;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;

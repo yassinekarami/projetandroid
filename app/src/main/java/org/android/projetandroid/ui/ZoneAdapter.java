@@ -44,17 +44,16 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
     @Override
     public void onBindViewHolder(@NonNull ZoneViewHolder holder, int position) {
         final Zone zone = mZones.get(position);
-      //  holder.mZoneCountryTextView.setText(zone.getCountry());
-        holder.mZoneCityTextView.setText(zone.getCity());
-        holder.mZoneNameTextView.setText(zone.getName());
-        holder.mZoneCountTextView.setText(Integer.toString(zone.getCount()));
-        holder.mZoneLocationTextView.setText(Integer.toString(zone.getLocations()));
+        holder.mZoneCityTextView.setText(zone.city);
+        holder.mZoneNameTextView.setText(zone.name);
+        holder.mZoneCountTextView.setText(Integer.toString(zone.count));
+        holder.mZoneLocationTextView.setText(Integer.toString(zone.locations));
 
         holder.mDetailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent seeZoneLocationActivity = new Intent(context, ZoneLocationActivity.class);
-                seeZoneLocationActivity.putExtra("zone", zone.getName());
+                seeZoneLocationActivity.putExtra("zone", zone.name);
                 context.startActivity(seeZoneLocationActivity);
             }
         });
@@ -71,9 +70,6 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
 
     class ZoneViewHolder extends RecyclerView.ViewHolder {
 
-       // @BindView(R.id.zone_adapter_country)
-       // TextView mZoneCountryTextView;
-
         @BindView(R.id.zone_adapter_city)
         TextView mZoneCityTextView;
 
@@ -88,7 +84,6 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
 
         @BindView(R.id.zone_adapter_detail)
         Button mDetailButton;
-
 
 
         public ZoneViewHolder(@NonNull View itemView) {
