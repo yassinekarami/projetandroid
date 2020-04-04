@@ -42,23 +42,66 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <Spinner
-                android:id="@+id/activity_recherche_param"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:drawable/btn_dropdown"
-                android:spinnerMode="dropdown" />
-
             <EditText
-                android:id="@+id/activity_recherche_param_value"
+                android:id="@+id/activity_pm25_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:ems="10"
-                android:hint="@string/parametre_value"
+                android:hint="pm25"
                 android:inputType="text"/>
 
+            <EditText
+                android:id="@+id/activity_pm10_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="pm10"
+                android:inputType="text"/>
+            <EditText
+                android:id="@+id/activity_so2_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="so2"
+                android:inputType="text"/>
+            <EditText
+                android:id="@+id/activity_no2_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="no2"
+                android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/activity_o3_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="o3"
+                android:inputType="text"/>
+
+
+            <EditText
+                android:id="@+id/activity_co_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="co"
+                android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/activity_bc_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="bc"
+                android:inputType="text"/>
+
+
         </LinearLayout>
+        <Button
+            android:id="@+id/activity_recherche_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recherche"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/location_recyclerView"

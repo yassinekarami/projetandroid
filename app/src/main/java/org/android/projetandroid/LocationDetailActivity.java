@@ -156,10 +156,7 @@ public class LocationDetailActivity extends AppCompatActivity {
         runOnUiThread (() -> {
             // Step 1: Update adapter's model
             for(Measurement m : event.getMeasurements()) {
-                Measurement.Values[] values = this.gson.fromJson(m.mesurement, Measurement.Values[].class);
-                for (Measurement.Values v: values) {
-                    mMeasurementLocations.append(v.getParameter()+" : "+v.getValue() +" "+v.getUnit()+"\n");
-                }
+                mMeasurementLocations.append(m.mesurement.parameter+" : "+m.mesurement.value +" "+m.mesurement.unit+"\n");
 
             }
         });

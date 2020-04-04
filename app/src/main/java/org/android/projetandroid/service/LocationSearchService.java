@@ -1,5 +1,7 @@
 package org.android.projetandroid.service;
 
+import android.renderscript.ScriptIntrinsicYuvToRGB;
+
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
 import com.activeandroid.query.Update;
@@ -17,7 +19,9 @@ import org.android.projetandroid.model.MeasurementResult;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -135,20 +139,27 @@ public class LocationSearchService {
                             }
                             // si les deux on le meme nom il s'agit alors de la même zone
                             else if(locName.equals(m.location)) {
-                                Measurement.Values v = new Measurement.Values(m.parameter, m.unit, m.value);
+                            //    Measurement.Values v = new Measurement.Values(m.parameter, m.unit, m.value);
+                                Measurement.Values v = new Measurement.Values();
+                                v.parameter = m.parameter;
+                                v.unit = m.unit;
+                                v.value = m.value;
                                 mesList.add(v);
                             }
                             // sinon on a changer de zone
                             else {
                                 // suppression des mesures ayant le meme paramètre
                                 HashSet<Object> v =new HashSet<>();
-                                mesList.removeIf(e->!v.add(e.getParameter()));
+                                mesList.removeIf(e->!v.add(e.parameter));
 
-                                // conversion de la liste de mesure en json
-                                String mesureamentString = gson.toJson(mesList);
-                                new Update(Location.class).set("measurement = ? ",mesureamentString).where("location = "+ "'"+m.location+"'").execute();
-                                Measurement mes = new Measurement(m.location, mesureamentString);
-                                mes.save();
+                                for(Measurement.Values val: mesList) {
+                                    val.save();
+                                    Measurement mes = new Measurement();
+                                    mes.location = m.location;
+                                    mes.mesurement = val;
+                                    mes.save();
+                                }
+
                                 // on change le nom de la location
                                 locName = m.location;
                                 mesList.clear();
@@ -158,10 +169,13 @@ public class LocationSearchService {
 
                                 // suppression des mesures ayant le meme paramètre
                                 HashSet<Object> v =new HashSet<>();
-                                mesList.removeIf(e->!v.add(e.getParameter()));
-                                String mesureamentString = gson.toJson(mesList);
-                                Measurement mes = new Measurement(m.location, mesureamentString);
-                                mes.save();
+                                mesList.removeIf(e->!v.add(e.parameter));
+                                for(Measurement.Values val: mesList) {
+                                    val.save();
+                                    Measurement mes = new Measurement();
+                                    mes.location = m.location;
+                                    mes.mesurement = val;
+                                }
                             }
                         }
                         ActiveAndroid.setTransactionSuccessful();
@@ -180,9 +194,9 @@ public class LocationSearchService {
     }
 
     public void searchMeasurementFromDB(String location) {
-        List<Measurement> matchingMeasurementFromDB = new Select().from(Measurement.class)
-                .where("location = ?", location)
-                .orderBy("location")
+        List<Measurement> matchingMeasurementFromDB = new Select()
+                .from(Measurement.class)
+                .where("location LIKE '%" + location +"%'" )
                 .execute();
 
         EventBusManager.bus.post(new SearchMeasurementResultEvent(matchingMeasurementFromDB));
@@ -226,21 +240,40 @@ public class LocationSearchService {
 
 
     // recherche des locations pour l'activité RECHERCHE
-    public void searchRechercheLocationFromDB(String zone, String search, String param, String value) {
+
+    //pm25, pm10, so2, no2, o3, co, bc
+    public void searchRechercheLocationFromDB(String zone, String search, HashMap<String, String> param) {
         if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
             mLastScheduleTask.cancel(true);
         }
         mLastScheduleTask = mScheduler.schedule(new Runnable() {
             public void run() {
                 // récupère les locations en base de donnée
+
+                /*
                 List<Location> matchingLocationFromBD = new Select().from(Location.class)
                         .innerJoin(Measurement.class)
                         .on("mesures.location=Locations.location")
+
+                        .on("mesures.measurement=valeur.Id")
                         .where("Locations.zone LIKE '%" + zone +"%'" )
                         .where("Locations.location LIKE '%" + search +"%'" )
                         .orderBy("Locations.location")
                         .execute();
+                 */
 
+
+
+                 List<Location> matchingLocationFromBD = new Select().from(Location.class)
+                        .where("zone LIKE '%" + zone +"%'" )
+                        .where("location LIKE '%" + search +"%'" )
+                        .orderBy("location")
+                        .execute();
+
+
+
+
+                System.out.println("finiiiii");
                 EventBusManager.bus.post(new SearchLocationResultEvent(matchingLocationFromBD));
             }
         }, REFRESH_DELAY, TimeUnit.MILLISECONDS);

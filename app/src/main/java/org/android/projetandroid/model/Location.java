@@ -24,7 +24,7 @@ public class Location extends Model implements Serializable {
     public String indicateur;
 
     @Expose
-    @Column(name="location", unique = true, onUniqueConflict = Column.ConflictAction.ABORT)
+    @Column(name="location", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     public String location;
 
     @Expose
@@ -34,8 +34,6 @@ public class Location extends Model implements Serializable {
     @Column(name="favoris")
     public boolean favoris;
 
-    @Column(name="measurement")
-    public String measurement;
 
     public Location(){
         super();
