@@ -23,12 +23,16 @@ import android.widget.Spinner;
 
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchLocationResultEvent;
+import org.android.projetandroid.event.SearchMeasurementResultEvent;
 import org.android.projetandroid.model.Location;
+import org.android.projetandroid.model.Measurement;
 import org.android.projetandroid.service.LocationSearchService;
 import org.android.projetandroid.ui.LocationAdapter;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,8 +80,9 @@ public class RechercheActivty extends AppCompatActivity {
     EditText mBcPram;
 
 
-    HashMap<String, String> paramHashMap;
-
+    HashMap<String, Float> paramHashMap;
+    List<Location> mLocationList;
+    Location currentLocation;
     private LocationAdapter mLocationAdapter;
 
 
@@ -92,45 +97,6 @@ public class RechercheActivty extends AppCompatActivity {
         mLocationAdapter = new LocationAdapter(this, new ArrayList<>());
         mLocationRecyclerView.setAdapter(mLocationAdapter);
         mLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        /*
-
-        mRechercheLocation.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mProgressBar.setVisibility(View.VISIBLE);
-                LocationSearchService.INSTANCE.searchRechercheLocationFromDB(mRechercheZone.getText().toString(), s.toString());
-            }
-        });
-
-        mRechercheZone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                mProgressBar.setVisibility(View.VISIBLE);
-                LocationSearchService.INSTANCE.searchRechercheLocationFromDB(s.toString(), mRechercheLocation.getText().toString());
-            }
-        });
-         */
 
     }
 
@@ -147,35 +113,93 @@ public class RechercheActivty extends AppCompatActivity {
         EventBusManager.bus.unregister(this);
     }
 
-
-    @Subscribe
-    public void searchResult(final SearchLocationResultEvent event) {
-
-        runOnUiThread(() -> {
-            mLocationAdapter.setLocations(event.getLocation());
-            mLocationAdapter.notifyDataSetChanged();
-
-            mProgressBar.setVisibility(View.GONE);
-
-        });
-    }
-
     @OnClick(R.id.activity_recherche_btn)
     public void rechercheClick()
     {
         paramHashMap = new HashMap<>();
-        paramHashMap.put("pm25",  mPm25Pram.getText().toString());
-        paramHashMap.put("pm10",  mPm10Pram.getText().toString());
-        paramHashMap.put("so2",  mSo2Pram.getText().toString());
-        paramHashMap.put("no2",  mNo2Pram.getText().toString());
-        paramHashMap.put("o3",  mO3Pram.getText().toString());
-        paramHashMap.put("co",  mCoPram.getText().toString());
-        paramHashMap.put("bc",  mBcPram.getText().toString());
-        LocationSearchService.INSTANCE.searchRechercheLocationFromDB(
+
+        if(!mPm25Pram.getText().toString().equals("")) {
+            paramHashMap.put("pm25", Float.parseFloat(mPm25Pram.getText().toString()));
+        }
+        else   paramHashMap.put("pm25", 0f);
+
+        if(!mPm10Pram.getText().toString().equals("")) {
+            paramHashMap.put("pm10", Float.parseFloat(mPm10Pram.getText().toString()));
+        }
+        else paramHashMap.put("pm10", 0f);
+
+        if(!mSo2Pram.getText().toString().equals("")){
+            paramHashMap.put("so2",  Float.parseFloat(mSo2Pram.getText().toString()));
+        }
+        else paramHashMap.put("so2", 0f);
+
+        if(!mNo2Pram.getText().toString().equals("")){
+            paramHashMap.put("no2",  Float.parseFloat(mNo2Pram.getText().toString()));
+        }
+        else paramHashMap.put("no2", 0f);
+
+        if(!mO3Pram.getText().toString().equals("")){
+            paramHashMap.put("o3",   Float.parseFloat(mO3Pram.getText().toString()));
+        }
+        else paramHashMap.put("o3", 0f);
+
+        if(!mCoPram.getText().toString().equals("")){
+            paramHashMap.put("co",   Float.parseFloat(mCoPram.getText().toString()));
+        }
+        else paramHashMap.put("co", 0f);
+
+        if(!mBcPram.getText().toString().equals("")){
+            paramHashMap.put("bc",   Float.parseFloat(mBcPram.getText().toString()));
+        }
+        else paramHashMap.put("bc", 0f);
+
+        LocationSearchService.INSTANCE.searchRechercheMeasurementFromDB(
                 mRechercheZone.getText().toString(),
-                mRechercheLocation.getText().toString(),
-                paramHashMap
+                mRechercheLocation.getText().toString()
                 );
         mProgressBar.setVisibility(View.VISIBLE);
     }
+
+
+    @Subscribe
+    public void  searchResult(final SearchMeasurementResultEvent event) {
+
+        // Here someone has posted a SearchResultEvent
+        runOnUiThread (() -> {
+            HashMap<String, List<Measurement>> measurementHashmap = new HashMap<String, List<Measurement>>();
+            List<Measurement> mesureList = new ArrayList<>();
+            List<Location> locationList = new ArrayList<>();
+            for(Measurement mes : event.getMeasurements()) {
+
+                boolean ok = true;
+                for(Measurement m: event.getMeasurements()) { // boucle pour parcourir les mesures
+                    if(paramHashMap.get(m.mesurement.parameter) > m.mesurement.value) { ok = false;}
+
+                    if(!measurementHashmap.containsKey(m.city.location)) { // la clée n'existe pas
+                        mesureList  = new ArrayList<>();
+                        measurementHashmap.put(m.city.location, mesureList);
+                    }
+
+                    if(m.city.location != null && m.mesurement != null) {
+                        measurementHashmap.get(m.city.location).add(m);
+                    }
+                }
+                if(ok) {
+                    locationList.add(mes.city);
+                }
+                else {
+                    measurementHashmap.remove(mes.city.location);
+                }
+            }
+            if(!measurementHashmap.isEmpty()) {
+                mLocationAdapter.setMeasurements(measurementHashmap);
+            }
+
+            mLocationAdapter.setLocations(locationList);
+            mLocationAdapter.notifyDataSetChanged();
+            mProgressBar.setVisibility(View.GONE);
+        });
+    }
 }
+
+

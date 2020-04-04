@@ -126,13 +126,13 @@ public class ZoneLocationActivity extends AppCompatActivity {
 
         for(Measurement m : event.getMeasurements())
         {
-            if(!measurementHashmap.containsKey(m.location)) { // la clée n'existe pas
+            if(!measurementHashmap.containsKey(m.city.location)) { // la clée n'existe pas
                mesureList  = new ArrayList<>();
-               measurementHashmap.put(m.location, mesureList);
+               measurementHashmap.put(m.city.location, mesureList);
             }
 
-            if(m.location != null && m.mesurement != null) {
-                measurementHashmap.get(m.location).add(m);
+            if(m.city.location != null && m.mesurement != null) {
+                measurementHashmap.get(m.city.location).add(m);
 
             }
         }

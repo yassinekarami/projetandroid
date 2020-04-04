@@ -48,14 +48,14 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:hint="pm25"
-                android:inputType="text"/>
+                android:inputType="numberDecimal"/>
 
             <EditText
                 android:id="@+id/activity_pm10_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="pm10"
-                android:inputType="text"/>
+                android:inputType="numberDecimal"/>
             <EditText
                 android:id="@+id/activity_so2_edittext"
                 android:layout_width="match_parent"
@@ -67,14 +67,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="no2"
-                android:inputType="text"/>
+                android:inputType="numberDecimal"/>
 
             <EditText
                 android:id="@+id/activity_o3_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="o3"
-                android:inputType="text"/>
+                android:inputType="numberDecimal"/>
 
 
             <EditText
@@ -82,14 +82,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="co"
-                android:inputType="text"/>
+                android:inputType="numberDecimal"/>
 
             <EditText
                 android:id="@+id/activity_bc_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="bc"
-                android:inputType="text"/>
+                android:inputType="numberDecimal"/>
 
 
         </LinearLayout>

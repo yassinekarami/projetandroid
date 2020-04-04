@@ -156,6 +156,8 @@ public class LocationSearchService {
                                     val.save();
                                     Measurement mes = new Measurement();
                                     mes.location = m.location;
+                                    Location l = new Select().from(Location.class).where("location LIKE '%" + m.location +"%'" ).executeSingle();
+                                    mes.city = l;
                                     mes.mesurement = val;
                                     mes.save();
                                 }
@@ -163,19 +165,6 @@ public class LocationSearchService {
                                 // on change le nom de la location
                                 locName = m.location;
                                 mesList.clear();
-                            }
-                            // verification de l'index de l'object courant et de la taille de la list de réponse
-                            if(response.body().results.indexOf(m) == response.body().results.size() -1) {
-
-                                // suppression des mesures ayant le meme paramètre
-                                HashSet<Object> v =new HashSet<>();
-                                mesList.removeIf(e->!v.add(e.parameter));
-                                for(Measurement.Values val: mesList) {
-                                    val.save();
-                                    Measurement mes = new Measurement();
-                                    mes.location = m.location;
-                                    mes.mesurement = val;
-                                }
                             }
                         }
                         ActiveAndroid.setTransactionSuccessful();
@@ -196,7 +185,22 @@ public class LocationSearchService {
     public void searchMeasurementFromDB(String location) {
         List<Measurement> matchingMeasurementFromDB = new Select()
                 .from(Measurement.class)
-                .where("location LIKE '%" + location +"%'" )
+                .join(Location.class)
+                .on("Mesures.location=Locations.Id")
+                .where("Locations.location LIKE '%" + location +"%'" )
+                .execute();
+
+        EventBusManager.bus.post(new SearchMeasurementResultEvent(matchingMeasurementFromDB));
+
+    }
+
+    public void searchRechercheMeasurementFromDB(String zone, String location) {
+        List<Measurement> matchingMeasurementFromDB = new Select()
+                .from(Measurement.class)
+                .join(Location.class)
+                .on("Mesures.location=Locations.Id")
+                .where("Locations.zone = ? ", zone)
+                .where("Locations.location LIKE '%" + location +"%'" )
                 .execute();
 
         EventBusManager.bus.post(new SearchMeasurementResultEvent(matchingMeasurementFromDB));
@@ -239,45 +243,6 @@ public class LocationSearchService {
     }
 
 
-    // recherche des locations pour l'activité RECHERCHE
-
-    //pm25, pm10, so2, no2, o3, co, bc
-    public void searchRechercheLocationFromDB(String zone, String search, HashMap<String, String> param) {
-        if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
-            mLastScheduleTask.cancel(true);
-        }
-        mLastScheduleTask = mScheduler.schedule(new Runnable() {
-            public void run() {
-                // récupère les locations en base de donnée
-
-                /*
-                List<Location> matchingLocationFromBD = new Select().from(Location.class)
-                        .innerJoin(Measurement.class)
-                        .on("mesures.location=Locations.location")
-
-                        .on("mesures.measurement=valeur.Id")
-                        .where("Locations.zone LIKE '%" + zone +"%'" )
-                        .where("Locations.location LIKE '%" + search +"%'" )
-                        .orderBy("Locations.location")
-                        .execute();
-                 */
-
-
-
-                 List<Location> matchingLocationFromBD = new Select().from(Location.class)
-                        .where("zone LIKE '%" + zone +"%'" )
-                        .where("location LIKE '%" + search +"%'" )
-                        .orderBy("location")
-                        .execute();
-
-
-
-
-                System.out.println("finiiiii");
-                EventBusManager.bus.post(new SearchLocationResultEvent(matchingLocationFromBD));
-            }
-        }, REFRESH_DELAY, TimeUnit.MILLISECONDS);
-    }
 
     public interface LocationSearchRESTService {
         @GET("locations")

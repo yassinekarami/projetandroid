@@ -8,8 +8,10 @@ import com.google.gson.annotations.Expose;
 @Table(name = "Mesures")
 public class Measurement extends Model {
     @Expose
-    @Column(name="location")
     public String location;
+
+    @Column(name="location")
+    public Location city;
 
     @Column(name="valeurs")
     public Values mesurement;
@@ -25,12 +27,6 @@ public class Measurement extends Model {
 
     public Measurement() {
         super();
-    }
-
-    public Measurement(String location, Values mesurement) {
-        super();
-        this.location = location;
-        this.mesurement = mesurement;
     }
 
 
