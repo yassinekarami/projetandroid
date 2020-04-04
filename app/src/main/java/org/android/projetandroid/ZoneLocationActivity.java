@@ -90,6 +90,12 @@ public class ZoneLocationActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        LocationSearchService.INSTANCE.searchLocationFromDB(intent.getStringExtra("zone"), mLocationSearch.getText().toString());
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         EventBusManager.bus.unregister(this);
@@ -115,30 +121,27 @@ public class ZoneLocationActivity extends AppCompatActivity {
 
     @Subscribe
     public void searchResult(final SearchMeasurementResultEvent event) {
+        runOnUiThread(() -> {
+            HashMap<String, List<Measurement>> measurementHashmap = new HashMap<String, List<Measurement>>();
+            List<Measurement> mesureList;
 
-  runOnUiThread(() -> {
-        HashMap<String, List<Measurement>> measurementHashmap = new HashMap<String, List<Measurement>>();
-        List<Measurement> mesureList;
+            for(Measurement m : event.getMeasurements())
+            {
+                if(!measurementHashmap.containsKey(m.city.location)) { // la clée n'existe pas
+                   mesureList  = new ArrayList<>();
+                   measurementHashmap.put(m.city.location, mesureList);
+                }
 
-        for(Measurement m : event.getMeasurements())
-        {
-            if(!measurementHashmap.containsKey(m.city.location)) { // la clée n'existe pas
-               mesureList  = new ArrayList<>();
-               measurementHashmap.put(m.city.location, mesureList);
+                if(m.city.location != null && m.mesurement != null) {
+                    measurementHashmap.get(m.city.location).add(m);
+
+                }
             }
-
-            if(m.city.location != null && m.mesurement != null) {
-                measurementHashmap.get(m.city.location).add(m);
-
+            if(!measurementHashmap.isEmpty()) {
+                mLocationAdapter.setMeasurements(measurementHashmap);
+                mLocationAdapter.notifyDataSetChanged();
             }
-        }
-        if(!measurementHashmap.isEmpty()) {
-            mLocationAdapter.setMeasurements(measurementHashmap);
-            mLocationAdapter.notifyDataSetChanged();
-        }
-  });
-
-
+        });
     }
 
 }

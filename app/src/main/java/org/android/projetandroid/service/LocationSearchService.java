@@ -125,8 +125,8 @@ public class LocationSearchService {
             public void onResponse(Call<MeasurementResult> call, Response<MeasurementResult> response) {
                 if(response.body() != null && response.body().results != null) {
                     ActiveAndroid.beginTransaction();
-                    try{
 
+                    try{
                         for (Measurement m : response.body().results) {
                             // initialisation du nom de la localité
 
