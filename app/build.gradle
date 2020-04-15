@@ -57,4 +57,9 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
 
+    // https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
+
+
+
 }

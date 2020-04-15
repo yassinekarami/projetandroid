@@ -20,6 +20,7 @@ import org.android.projetandroid.R;
 import org.android.projetandroid.ZoneLocationActivity;
 import org.android.projetandroid.model.Location;
 import org.android.projetandroid.model.Measurement;
+import org.android.projetandroid.model.Meteo;
 import org.json.JSONArray;
 
 
@@ -39,6 +40,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
     // string sera le code de la location
     private HashMap<String, List<Measurement> > mMeasurements;
+    private HashMap<String, String> mMeteos;
     private  Measurement mes = null;
     Gson gson ;
 
@@ -80,6 +82,16 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             }
         }
 
+
+        if(mMeteos != null) {
+            if(mMeteos.get(location.location) != null) {
+
+                Meteo.Temperature t = gson.fromJson(mMeteos.get(location.location), Meteo.Temperature.class);
+                System.out.println("iiiiiiiiiiiiciiiiiiiiiiiiiiiiiii "+t.valeur +" "+t.date);
+                holder.mLocationMeteoCourante.setText(t.date + "   "+t.valeur);
+            }
+        }
+
         holder.mLocationDetailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +115,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
     public void setMeasurements(HashMap<String, List<Measurement> >measurements) { this.mMeasurements = measurements;}
 
+    public void setMeteo(HashMap<String, String> meteo) {this.mMeteos = meteo;}
+
     public HashMap<String, List<Measurement>> getMeasurements() { return this.mMeasurements; }
 
 
@@ -119,6 +133,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
         @BindView(R.id.location_adapter_measurements)
         TextView mLocationMeasurementTextView;
+
+        @BindView(R.id.location_adapter_meteo_courante)
+        TextView mLocationMeteoCourante;
 
         @BindView(R.id.location_adapter_detail)
         Button mLocationDetailButton;

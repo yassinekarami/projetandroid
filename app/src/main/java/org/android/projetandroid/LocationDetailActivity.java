@@ -20,11 +20,15 @@ import android.widget.Toast;
 
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchMeasurementResultEvent;
+import org.android.projetandroid.event.SearchMeteoResultEvent;
 import org.android.projetandroid.model.Location;
 import org.android.projetandroid.model.Measurement;
+import org.android.projetandroid.model.Meteo;
 import org.android.projetandroid.service.LocationSearchService;
+import org.android.projetandroid.service.MeteoSearchService;
 
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +52,9 @@ public class LocationDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.detail_location_measurements)
     TextView mMeasurementLocations;
+
+    @BindView(R.id.detail_location_meteo_prevision)
+    TextView mDetailLocationPrevision;
 
     @BindView(R.id.detail_location_image)
     ImageView mDetailImage;
@@ -73,6 +80,7 @@ public class LocationDetailActivity extends AppCompatActivity {
 
         EventBusManager.bus.register(this);
         LocationSearchService.INSTANCE.searchMeasurementFromDB(locationDetail.location);
+        MeteoSearchService.INSTANCE.searchMeteoFromDB(locationDetail);
 
         // si la location est en favoris
         if (locationDetail.favoris) {
@@ -157,6 +165,17 @@ public class LocationDetailActivity extends AppCompatActivity {
             for(Measurement m : event.getMeasurements()) {
                 mMeasurementLocations.append(m.mesurement.parameter+" : "+m.mesurement.value +" "+m.mesurement.unit+"\n");
 
+            }
+        });
+    }
+
+    @Subscribe
+    public void searchMeteoResult(final SearchMeteoResultEvent event) {
+        System.out.println("laaaaaaaaeeeeeeeeeeeeeeezfzGEGerGERGREGESGREGEaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        runOnUiThread(() -> {
+            for(Meteo m : event.getMeteos()) {
+                System.out.println("laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                mDetailLocationPrevision.append(m.prevision+"\n");
             }
         });
     }

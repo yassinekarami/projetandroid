@@ -62,7 +62,6 @@ public class Location extends Model implements Serializable {
         @Column(name="latitude")
         public double latitude = 0;
 
-
     }
 
 }

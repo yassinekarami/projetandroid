@@ -18,13 +18,17 @@ import com.squareup.otto.Subscribe;
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchLocationResultEvent;
 import org.android.projetandroid.event.SearchMeasurementResultEvent;
+import org.android.projetandroid.event.SearchMeteoResultEvent;
 import org.android.projetandroid.model.Location;
 import org.android.projetandroid.model.Measurement;
+import org.android.projetandroid.model.Meteo;
 import org.android.projetandroid.service.LocationSearchService;
+import org.android.projetandroid.service.MeteoSearchService;
 import org.android.projetandroid.ui.LocationAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 
 import butterknife.BindView;
@@ -115,6 +119,7 @@ public class ZoneLocationActivity extends AppCompatActivity {
 
             for(Location l : event.getLocation()) {
                 LocationSearchService.INSTANCE.searchMeasurement(intent.getStringExtra("zone"), l.location);
+                MeteoSearchService.INSTANCE.searchTemperature(l);
             }
         });
     }
@@ -143,5 +148,20 @@ public class ZoneLocationActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Subscribe
+    public void searchMeteoResult(final SearchMeteoResultEvent event) {
+        runOnUiThread(() -> {
+            HashMap<String, String> meteoHashmap = new HashMap<>();
+            for(Meteo m: event.getMeteos())
+            {
+                meteoHashmap.put(m.location.location, m.courant);
+                System.out.println("laaaaaaaaaaa "+m.location.location + "   "+m.courant);
+            }
+              mLocationAdapter.setMeteo(meteoHashmap);
+        });
+    }
+
+
 
 }
