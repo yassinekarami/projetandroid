@@ -87,8 +87,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             if(mMeteos.get(location.location) != null) {
 
                 Meteo.Temperature t = gson.fromJson(mMeteos.get(location.location), Meteo.Temperature.class);
-                System.out.println("iiiiiiiiiiiiciiiiiiiiiiiiiiiiiii "+t.valeur +" "+t.date);
-                holder.mLocationMeteoCourante.setText(t.date + "   "+t.valeur);
+                holder.mLocationMeteoCourante.setText("Temperature du : "+t.date + "  \n "+t.valeur );
             }
         }
 

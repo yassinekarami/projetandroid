@@ -156,9 +156,10 @@ public class ZoneLocationActivity extends AppCompatActivity {
             for(Meteo m: event.getMeteos())
             {
                 meteoHashmap.put(m.location.location, m.courant);
-                System.out.println("laaaaaaaaaaa "+m.location.location + "   "+m.courant);
+
             }
-              mLocationAdapter.setMeteo(meteoHashmap);
+            mLocationAdapter.setMeteo(meteoHashmap);
+            mLocationAdapter.notifyDataSetChanged();
         });
     }
 

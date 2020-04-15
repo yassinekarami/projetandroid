@@ -39,4 +39,5 @@ public class Meteo extends Model implements Serializable {
 
 
 
+
 }

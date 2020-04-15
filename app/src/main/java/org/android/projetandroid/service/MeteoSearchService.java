@@ -127,158 +127,28 @@ public class MeteoSearchService {
                             }
                         }
 
-
-
                         c.add(Calendar.DATE, 1);
+                        getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
 
-                        date = ((Map)jo.get(dateFormat.format(c.getTime())));
 
-                        // iterating address Map
-                        itr1 = date.entrySet().iterator();
-                        while (itr1.hasNext()) {
-                            Map.Entry pair = itr1.next();
-                            if(pair.getKey().equals("temperature")) {
-                                Meteo.Temperature t = new Meteo.Temperature();
-                                t.date = dateFormat.format(c.getTime());
-                                t.valeur = pair.getValue();
-
-                                // convertion de l'objet en JSON
-                                // update de meteo
-
-                                Meteo m = new Meteo();
-                                m.location = location;
-                                m.courant = gson.toJson(t);
-
-                                prevision.add(t);
-                            }
-                        }
 
 
                         c.add(Calendar.DATE, 2);
-                        date = ((Map)jo.get(dateFormat.format(c.getTime())));
-
-                        // iterating address Map
-                        itr1 = date.entrySet().iterator();
-                        while (itr1.hasNext()) {
-                            Map.Entry pair = itr1.next();
-                            if(pair.getKey().equals("temperature")) {
-                                Meteo.Temperature t = new Meteo.Temperature();
-                                t.date = dateFormat.format(c.getTime());
-                                t.valeur = pair.getValue();
-
-
-                                // convertion de l'objet en JSON
-                                // update de meteo
-
-                                Meteo m = new Meteo();
-                                m.location = location;
-                                m.courant = gson.toJson(t);
-
-                                prevision.add(t);
-                            }
-                        }
+                        getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
 
 
                         c.add(Calendar.DATE, 3);
-
-                        date = ((Map)jo.get(dateFormat.format(c.getTime())));
-
-                        // iterating address Map
-                        itr1 = date.entrySet().iterator();
-                        while (itr1.hasNext()) {
-                            Map.Entry pair = itr1.next();
-                            if(pair.getKey().equals("temperature")) {
-                                Meteo.Temperature t = new Meteo.Temperature();
-                                t.date = dateFormat.format(c.getTime());
-                                t.valeur = pair.getValue();
+                        getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
 
 
-                                // convertion de l'objet en JSON
-                                // update de meteo
-
-                                Meteo m = new Meteo();
-                                m.location = location;
-                                m.courant = gson.toJson(t);
-
-                                prevision.add(t);
-                            }
-                        }
-
-
-                        /*
                         c.add(Calendar.DATE, 4);
-                        date = ((Map)jo.get(dateFormat.format(c.getTime())));
-
-                        // iterating address Map
-                        itr1 = date.entrySet().iterator();
-                        while (itr1.hasNext()) {
-                            Map.Entry pair = itr1.next();
-                            if(pair.getKey().equals("temperature")) {
-                                Meteo.Temperature t = new Meteo.Temperature();
-                                t.date = dateFormat.format(c.getTime());
-                                t.valeur = pair.getValue();
-
-
-                                // convertion de l'objet en JSON
-                                // update de meteo
-
-                                Meteo m = new Meteo();
-                                m.location = location;
-                                m.courant = gson.toJson(t);
-
-                                prevision.add(t);
-                            }
-                        }
-
+                        getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
 
                         c.add(Calendar.DATE, 5);
-                        date = ((Map)jo.get(dateFormat.format(c.getTime())));
-
-                        // iterating address Map
-                        itr1 = date.entrySet().iterator();
-                        while (itr1.hasNext()) {
-                            Map.Entry pair = itr1.next();
-                            if(pair.getKey().equals("temperature")) {
-                                Meteo.Temperature t = new Meteo.Temperature();
-                                t.date = dateFormat.format(c.getTime());
-                                t.valeur = pair.getValue();
-
-
-                                // convertion de l'objet en JSON
-                                // update de meteo
-
-                                Meteo m = new Meteo();
-                                m.location = location;
-                                m.courant = gson.toJson(t);
-
-                                prevision.add(t);
-                            }
-                        }
-
+                        getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
 
                         c.add(Calendar.DATE, 6);
-                        date = ((Map)jo.get(dateFormat.format(c.getTime())));
-
-                        // iterating address Map
-                        itr1 = date.entrySet().iterator();
-                        while (itr1.hasNext()) {
-                            Map.Entry pair = itr1.next();
-                            if(pair.getKey().equals("temperature")) {
-                                Meteo.Temperature t = new Meteo.Temperature();
-                                t.date = dateFormat.format(c.getTime());
-                                t.valeur = pair.getValue();
-                                // convertion de l'objet en JSON
-                                // update de meteo
-
-                                Meteo m = new Meteo();
-                                m.location = location;
-                                m.courant = gson.toJson(t);
-
-                                prevision.add(t);
-                            }
-                        }
-                         */
-
+                        getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
 
                         meteo.prevision = gson.toJson(prevision);
                         meteo.save();
@@ -297,11 +167,38 @@ public class MeteoSearchService {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                System.out.println("echec snif :( ");
+                searchMeteoFromDB(location);
             }
         });
     }
 
+    private void getMeteo(Map date, Location location) {
+        if(date != null)
+        {
+            Iterator<Map.Entry> itr1 = date.entrySet().iterator();
+            // iterating address Map
+            itr1 = date.entrySet().iterator();
+            while (itr1.hasNext()) {
+                Map.Entry pair = itr1.next();
+                if(pair.getKey().equals("temperature")) {
+                    Meteo.Temperature t = new Meteo.Temperature();
+                    t.date = dateFormat.format(c.getTime());
+                    t.valeur = pair.getValue();
+
+
+                    // convertion de l'objet en JSON
+                    // update de meteo
+
+                    Meteo m = new Meteo();
+                    m.location = location;
+                    m.courant = gson.toJson(t);
+
+                    prevision.add(t);
+                }
+            }
+        }
+
+    }
 
     public interface MeteoSearchRESTService {
         @GET("json")
@@ -320,7 +217,7 @@ public class MeteoSearchService {
                 List<Meteo> matchingMeteoFromBD = new Select().from(Meteo.class)
                         .join(Location.class)
                         .on("Meteo.location=Locations.Id")
-                        .where("Meteo.location = ? ", location.getId())
+                        .where("Locations.Id = ? ", location.getId())
                         .execute();
 
                 EventBusManager.bus.post(new SearchMeteoResultEvent(matchingMeteoFromBD));

@@ -16,10 +16,15 @@ import android.widget.ProgressBar;
 
 import org.android.projetandroid.event.EventBusManager;
 import org.android.projetandroid.event.SearchLocationResultEvent;
+import org.android.projetandroid.event.SearchMeteoResultEvent;
+import org.android.projetandroid.model.Location;
+import org.android.projetandroid.model.Meteo;
 import org.android.projetandroid.service.LocationSearchService;
+import org.android.projetandroid.service.MeteoSearchService;
 import org.android.projetandroid.ui.LocationAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,7 +93,25 @@ public class FavorisActivity extends AppCompatActivity {
             mLocationAdapter.notifyDataSetChanged();
 
             mProgressBar.setVisibility(View.GONE);
+        });
 
+        for(Location l: event.getLocation()) {
+            MeteoSearchService.INSTANCE.searchTemperature(l);
+
+        }
+    }
+
+    @Subscribe
+    public void searchMeteoResult(final SearchMeteoResultEvent event) {
+        runOnUiThread(() -> {
+            HashMap<String, String> meteoHashmap = new HashMap<>();
+            for(Meteo m: event.getMeteos())
+            {
+                meteoHashmap.put(m.location.location, m.courant);
+
+            }
+            mLocationAdapter.setMeteo(meteoHashmap);
+            mLocationAdapter.notifyDataSetChanged();
         });
     }
 }

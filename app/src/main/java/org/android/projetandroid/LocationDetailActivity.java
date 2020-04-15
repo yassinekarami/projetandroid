@@ -158,25 +158,25 @@ public class LocationDetailActivity extends AppCompatActivity {
 
     @Subscribe
     public void  searchResult(final SearchMeasurementResultEvent event) {
-
-        // Here someone has posted a SearchResultEvent
-        runOnUiThread (() -> {
-            // Step 1: Update adapter's model
+        runOnUiThread( () -> {
             for(Measurement m : event.getMeasurements()) {
                 mMeasurementLocations.append(m.mesurement.parameter+" : "+m.mesurement.value +" "+m.mesurement.unit+"\n");
-
             }
         });
+
     }
 
     @Subscribe
     public void searchMeteoResult(final SearchMeteoResultEvent event) {
-        System.out.println("laaaaaaaaeeeeeeeeeeeeeeezfzGEGerGERGREGESGREGEaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        runOnUiThread(() -> {
+        runOnUiThread( () -> {
+            mDetailLocationPrevision.append("Prevision 7 jours \n");
             for(Meteo m : event.getMeteos()) {
-                System.out.println("laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-                mDetailLocationPrevision.append(m.prevision+"\n");
+                Meteo.Temperature[] temp = gson.fromJson(m.prevision, Meteo.Temperature[].class);
+                for(Meteo.Temperature t: temp) {
+                    mDetailLocationPrevision.append(t.date+ " : " +t.valeur+"\n");
+                }
             }
         });
+
     }
 }
