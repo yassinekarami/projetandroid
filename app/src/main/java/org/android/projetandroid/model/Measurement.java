@@ -7,14 +7,9 @@ import com.google.gson.annotations.Expose;
 
 @Table(name = "Mesures")
 public class Measurement extends Model {
+
     @Expose
     public String location;
-
-    @Column(name="location")
-    public Location city;
-
-    @Column(name="valeurs")
-    public Values mesurement;
 
     @Expose
     public String parameter;
@@ -24,6 +19,14 @@ public class Measurement extends Model {
 
     @Expose
     public String unit;
+
+    @Column(name="valeurs")
+    public Values mesurement;
+
+    @Column(name="location")
+    public Location city;
+
+
 
     public Measurement() {
         super();

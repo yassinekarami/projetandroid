@@ -69,7 +69,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
         holder.mLocationZoneTextView.setText(location.city);
         holder.mLocationCityTextView.setText(location.location);
-        Location.Indicateur[] indic = gson.fromJson(location.indicateur, Location.Indicateur[].class);
 
         if(mMeasurements != null) {
 
@@ -81,7 +80,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                 holder.mLocationMeasurementTextView.setText(mesures);
             }
         }
-
 
         if(mMeteos != null) {
             if(mMeteos.get(location.location) != null) {
@@ -120,9 +118,6 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
 
 
     class LocationViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.location_adapter_parameters)
-        TextView mLocationParameterTextView;
 
         @BindView(R.id.location_adapter_locations)
         TextView mLocationCityTextView;

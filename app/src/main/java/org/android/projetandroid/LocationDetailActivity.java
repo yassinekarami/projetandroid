@@ -94,11 +94,6 @@ public class LocationDetailActivity extends AppCompatActivity {
             this.mButtonRetirer.setVisibility(View.INVISIBLE);
         }
 
-        Location.Indicateur[] indic = this.gson.fromJson(locationDetail.indicateur, Location.Indicateur[].class);
-
-        for(Location.Indicateur i : indic) {
-            mDetailIndicateur.append(i.parameter +" : "+i.count+ "\n");
-        }
         mDetailLocations.append(locationDetail.location);
 
         this.coordonne = this.locationDetail.coordinates.latitude+","+this.locationDetail.coordinates.longitude;

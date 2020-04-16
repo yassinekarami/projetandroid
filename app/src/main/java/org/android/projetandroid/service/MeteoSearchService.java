@@ -82,13 +82,13 @@ public class MeteoSearchService {
         mMeteoSearchRESTService.listTemperature(coordonne, "Bx1RRgJ8BCZfclJlUiRQeVA4BTALfVB3B3sLaA5rVisGbVMyA2MBZwVrVisCLQs9BCkPbA02UmJXPAd%2FCHoEZQdtUT0CaQRjXzBSN1J9UHtQfgVkCytQdwdlC2sOZVYrBmRTMgNgAX0Fa1YyAjsLIQQ2D28NNlJ1VysHYQhgBG8HYlE8AmIEYF8yUjRSZlB7UHwFYAthUGEHYgs%2BDmpWZwZhUzQDZwE2BWpWNAI1CyEEMg9mDTNSYlc9B2cIZwRmB3tRKgIYBBVfLVJwUiBQMVAlBXgLYVA2BzA%3D",
                 "53ea460b691c955bb24f1fe18ffc268f")
                 .enqueue(new Callback<ResponseBody>() {
+
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                //c.add(Calendar.DATE, 4); -incrementation de la date
+                searchMeteoFromDB(location);
                 try{
                     // l'object méteo qui sera enregistré en base de donnée
                     Meteo meteo = new Meteo();
-
 
                     // parsing file "JSONExample.json"
                     if(response.body() != null) {
@@ -123,14 +123,11 @@ public class MeteoSearchService {
                                 meteo.courant = gson.toJson(t);
 
                                 prevision.add(t);
-
                             }
                         }
 
                         c.add(Calendar.DATE, 1);
                         getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
-
-
 
 
                         c.add(Calendar.DATE, 2);
@@ -152,7 +149,6 @@ public class MeteoSearchService {
 
                         meteo.prevision = gson.toJson(prevision);
                         meteo.save();
-
                     }
 
 
@@ -163,6 +159,7 @@ public class MeteoSearchService {
                 }
 
                 searchMeteoFromDB(location);
+
             }
 
             @Override
@@ -171,6 +168,35 @@ public class MeteoSearchService {
             }
         });
     }
+
+    public interface MeteoSearchRESTService {
+        @GET("json")
+        Call<ResponseBody> listTemperature(@Query(value = "_ll", encoded = true) String coordonne,
+                                          @Query(value = "_auth", encoded = true) String auth,
+                                          @Query(value = "_c", encoded = true) String key);
+    }
+
+
+    //requete foireuse
+    // A REVOIR  !!!!!
+    public void searchMeteoFromDB(Location location) {
+        if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
+            mLastScheduleTask.cancel(true);
+        }
+        mLastScheduleTask = mScheduler.schedule(new Runnable() {
+            public void run() {
+                List<Meteo> matchingMeteoFromBD = new Select().from(Meteo.class)
+                        .join(Location.class)
+                        .on("Meteo.location=Locations.Id")
+                       // .where("Locations.Id = ? ", location.getId())
+                        .execute();
+
+                EventBusManager.bus.post(new SearchMeteoResultEvent(matchingMeteoFromBD));
+            }
+        }, REFRESH_DELAY, TimeUnit.MILLISECONDS);
+    }
+
+
 
     private void getMeteo(Map date, Location location) {
         if(date != null)
@@ -197,32 +223,6 @@ public class MeteoSearchService {
                 }
             }
         }
-
-    }
-
-    public interface MeteoSearchRESTService {
-        @GET("json")
-        Call<ResponseBody> listTemperature(@Query(value = "_ll", encoded = true) String coordonne,
-                                          @Query(value = "_auth", encoded = true) String auth,
-                                          @Query(value = "_c", encoded = true) String key);
-    }
-
-
-    public void searchMeteoFromDB(Location location) {
-        if (mLastScheduleTask != null && !mLastScheduleTask.isDone()) {
-            mLastScheduleTask.cancel(true);
-        }
-        mLastScheduleTask = mScheduler.schedule(new Runnable() {
-            public void run() {
-                List<Meteo> matchingMeteoFromBD = new Select().from(Meteo.class)
-                        .join(Location.class)
-                        .on("Meteo.location=Locations.Id")
-                        .where("Locations.Id = ? ", location.getId())
-                        .execute();
-
-                EventBusManager.bus.post(new SearchMeteoResultEvent(matchingMeteoFromBD));
-            }
-        }, REFRESH_DELAY, TimeUnit.MILLISECONDS);
     }
 
 

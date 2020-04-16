@@ -91,7 +91,6 @@ public class LocationSearchService {
 
                             loc.favoris = false;
 
-                            loc.indicateur = gson.toJson(l.countsByMeasurement);
                             loc.save();
                         }
                         ActiveAndroid.setTransactionSuccessful();
@@ -125,7 +124,7 @@ public class LocationSearchService {
             public void onResponse(Call<MeasurementResult> call, Response<MeasurementResult> response) {
                 if(response.body() != null && response.body().results != null) {
                     ActiveAndroid.beginTransaction();
-
+                    searchMeasurementFromDB(location);
                     try{
                         for (Measurement m : response.body().results) {
                             // initialisation du nom de la localité
