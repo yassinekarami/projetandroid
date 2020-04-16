@@ -144,7 +144,6 @@ public class RechercheActivty extends AppCompatActivity {
                 mRechercheZone.getText().toString(),
                 mRechercheLocation.getText().toString()
                 );
-        mProgressBar.setVisibility(View.VISIBLE);
     }
 
 
@@ -152,39 +151,40 @@ public class RechercheActivty extends AppCompatActivity {
     public void  searchResult(final SearchMeasurementResultEvent event) {
 
         // Here someone has posted a SearchResultEvent
-        runOnUiThread (() -> {
-            HashMap<String, List<Measurement>> measurementHashmap = new HashMap<String, List<Measurement>>();
-            List<Measurement> mesureList = new ArrayList<>();
-            List<Location> locationList = new ArrayList<>();
-            for(Measurement mes : event.getMeasurements()) {
+        HashMap<String, List<Measurement>> measurementHashmap = new HashMap<String, List<Measurement>>();
+        List<Measurement> mesureList = new ArrayList<>();
+        List<Location> locationList = new ArrayList<>();
+        for(Measurement mes : event.getMeasurements()) {
 
-                boolean ok = true;
-                for(Measurement m: event.getMeasurements()) { // boucle pour parcourir les mesures
-                    if(paramHashMap.get(m.mesurement.parameter) > m.mesurement.value) { ok = false;}
+            boolean ok = true;
+            for(Measurement m: event.getMeasurements()) { // boucle pour parcourir les mesures
+                if(paramHashMap.get(m.mesurement.parameter) > m.mesurement.value) { ok = false;}
 
-                    if(!measurementHashmap.containsKey(m.city.location)) { // la clée n'existe pas
-                        mesureList  = new ArrayList<>();
-                        measurementHashmap.put(m.city.location, mesureList);
-                    }
-
-                    if(m.city.location != null && m.mesurement != null) {
-                        measurementHashmap.get(m.city.location).add(m);
-                    }
+                if(!measurementHashmap.containsKey(m.city.location)) { // la clée n'existe pas
+                    mesureList  = new ArrayList<>();
+                    measurementHashmap.put(m.city.location, mesureList);
                 }
-                if(ok) {
-                    locationList.add(mes.city);
-                }
-                else {
-                    measurementHashmap.remove(mes.city.location);
+
+                if(m.city.location != null && m.mesurement != null) {
+                    measurementHashmap.get(m.city.location).add(m);
                 }
             }
+            if(ok) {
+                locationList.add(mes.city);
+            }
+            else {
+                measurementHashmap.remove(mes.city.location);
+            }
+        }
+
+        runOnUiThread (() -> {
+
             if(!measurementHashmap.isEmpty()) {
                 mLocationAdapter.setMeasurements(measurementHashmap);
             }
 
             mLocationAdapter.setLocations(locationList);
             mLocationAdapter.notifyDataSetChanged();
-            mProgressBar.setVisibility(View.GONE);
         });
     }
 }

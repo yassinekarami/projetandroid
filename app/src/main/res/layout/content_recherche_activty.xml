@@ -54,18 +54,21 @@
                 android:id="@+id/activity_pm10_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:hint="pm10"
                 android:inputType="numberDecimal"/>
             <EditText
                 android:id="@+id/activity_so2_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:hint="so2"
                 android:inputType="text"/>
             <EditText
                 android:id="@+id/activity_no2_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:hint="no2"
                 android:inputType="numberDecimal"/>
 
@@ -73,6 +76,7 @@
                 android:id="@+id/activity_o3_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:hint="o3"
                 android:inputType="numberDecimal"/>
 
@@ -81,6 +85,7 @@
                 android:id="@+id/activity_co_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:hint="co"
                 android:inputType="numberDecimal"/>
 
@@ -88,6 +93,7 @@
                 android:id="@+id/activity_bc_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:hint="bc"
                 android:inputType="numberDecimal"/>
 
