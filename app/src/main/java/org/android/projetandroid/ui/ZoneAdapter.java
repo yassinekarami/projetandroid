@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,9 +46,10 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
     public void onBindViewHolder(@NonNull ZoneViewHolder holder, int position) {
         final Zone zone = mZones.get(position);
         holder.mZoneCityTextView.setText(zone.city);
+
         holder.mZoneNameTextView.setText(zone.name);
-        holder.mZoneCountTextView.setText(Integer.toString(zone.count));
-        holder.mZoneLocationTextView.setText(Integer.toString(zone.locations));
+        holder.mZoneCountTextView.setText("Nombre de mesure prise : "+Integer.toString(zone.count));
+        holder.mZoneLocationTextView.setText("Nombre de location : "+Integer.toString(zone.locations));
 
         holder.mDetailButton.setOnClickListener(new View.OnClickListener() {
             @Override
