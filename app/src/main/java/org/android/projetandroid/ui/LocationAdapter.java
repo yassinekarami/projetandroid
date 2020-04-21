@@ -67,17 +67,26 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     public void onBindViewHolder(@NonNull LocationAdapter.LocationViewHolder holder, int position) {
         final Location location = mLocations.get(position);
 
-        holder.mLocationZoneTextView.setText(location.city);
-        holder.mLocationCityTextView.setText(location.location);
+        if(location != null)
+        {
+            holder.mLocationZoneTextView.setText(location.city);
+            holder.mLocationCityTextView.setText(location.location);
 
-        if(mMeasurements != null) {
+            if(mMeasurements != null) {
 
-            if(mMeasurements.get(location.location) != null) {
-                String mesures = "";
-                for(Measurement m: mMeasurements.get(location.location)) {
-                    mesures = mesures +"\n"+ m.mesurement.parameter+" : "+m.mesurement.value +" "+m.mesurement.unit;
+                if(mMeasurements.get(location.location) != null) {
+                    String mesures = "";
+                    for(Measurement m: mMeasurements.get(location.location)) {
+
+                        Measurement.Values[] valeur = gson.fromJson(m.mesure, Measurement.Values[].class);
+                        for (Measurement.Values v : valeur)
+                        {
+                            mesures = mesures +"\n"+ v.parameter+" : "+v.value +" "+v.unit;
+                        }
+
+                    }
+                    holder.mLocationMeasurementTextView.setText(mesures);
                 }
-                holder.mLocationMeasurementTextView.setText(mesures);
             }
         }
 

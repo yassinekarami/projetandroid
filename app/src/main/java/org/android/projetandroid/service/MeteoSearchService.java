@@ -85,7 +85,6 @@ public class MeteoSearchService {
 
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                searchMeteoFromDB(location);
                 try{
                     // l'object méteo qui sera enregistré en base de donnée
                     Meteo meteo = new Meteo();
@@ -119,7 +118,7 @@ public class MeteoSearchService {
                                 t.valeur = pair.getValue();
                                 // convertion de l'objet en JSON
                                 // update de meteo
-                                meteo.location = location;
+                                meteo.location = location.location;
                                 meteo.courant = gson.toJson(t);
 
                                 prevision.add(t);
@@ -129,14 +128,11 @@ public class MeteoSearchService {
                         c.add(Calendar.DATE, 1);
                         getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
 
-
                         c.add(Calendar.DATE, 2);
                         getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
 
-
                         c.add(Calendar.DATE, 3);
                         getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
-
 
                         c.add(Calendar.DATE, 4);
                         getMeteo(((Map)jo.get(dateFormat.format(c.getTime()))), location);
@@ -185,10 +181,9 @@ public class MeteoSearchService {
         }
         mLastScheduleTask = mScheduler.schedule(new Runnable() {
             public void run() {
+
                 List<Meteo> matchingMeteoFromBD = new Select().from(Meteo.class)
-                        .join(Location.class)
-                        .on("Meteo.location=Locations.Id")
-                       // .where("Locations.Id = ? ", location.getId())
+                        .where("location=?", location.location)
                         .execute();
 
                 EventBusManager.bus.post(new SearchMeteoResultEvent(matchingMeteoFromBD));
@@ -216,7 +211,7 @@ public class MeteoSearchService {
                     // update de meteo
 
                     Meteo m = new Meteo();
-                    m.location = location;
+                    m.location = location.location;
                     m.courant = gson.toJson(t);
 
                     prevision.add(t);

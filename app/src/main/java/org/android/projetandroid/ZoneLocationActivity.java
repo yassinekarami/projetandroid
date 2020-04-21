@@ -130,15 +130,16 @@ public class ZoneLocationActivity extends AppCompatActivity {
             HashMap<String, List<Measurement>> measurementHashmap = new HashMap<String, List<Measurement>>();
             List<Measurement> mesureList;
 
+
             for(Measurement m : event.getMeasurements())
             {
-                if(!measurementHashmap.containsKey(m.city.location)) { // la clée n'existe pas
+                if(!measurementHashmap.containsKey(m.location)) { // la clée n'existe pas
                    mesureList  = new ArrayList<>();
-                   measurementHashmap.put(m.city.location, mesureList);
+                   measurementHashmap.put(m.location, mesureList);
                 }
 
-                if(m.city.location != null && m.mesurement != null) {
-                    measurementHashmap.get(m.city.location).add(m);
+                if(m.location != null && m.mesure != null) {
+                    measurementHashmap.get(m.location).add(m);
 
                 }
             }
@@ -146,6 +147,8 @@ public class ZoneLocationActivity extends AppCompatActivity {
                 mLocationAdapter.setMeasurements(measurementHashmap);
                 mLocationAdapter.notifyDataSetChanged();
             }
+
+
         });
     }
 
@@ -155,7 +158,7 @@ public class ZoneLocationActivity extends AppCompatActivity {
             HashMap<String, String> meteoHashmap = new HashMap<>();
             for(Meteo m: event.getMeteos())
             {
-                meteoHashmap.put(m.location.location, m.courant);
+                meteoHashmap.put(m.location, m.courant);
 
             }
             mLocationAdapter.setMeteo(meteoHashmap);

@@ -13,7 +13,7 @@ public class Zone extends Model {
     public String country;
 
     @Expose
-    @Column(name = "name", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    @Column(name = "name", index = true, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     public String name;
 
     @Expose

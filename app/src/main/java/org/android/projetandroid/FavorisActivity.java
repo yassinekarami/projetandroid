@@ -107,7 +107,7 @@ public class FavorisActivity extends AppCompatActivity {
             HashMap<String, String> meteoHashmap = new HashMap<>();
             for(Meteo m: event.getMeteos())
             {
-                meteoHashmap.put(m.location.location, m.courant);
+                meteoHashmap.put(m.location, m.courant);
 
             }
             mLocationAdapter.setMeteo(meteoHashmap);

@@ -7,8 +7,6 @@ import com.activeandroid.annotation.Table;
 import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(name = "Locations")
 public class Location extends Model implements Serializable {
@@ -18,11 +16,11 @@ public class Location extends Model implements Serializable {
     public String city;
 
     @Expose
-    @Column(name="location", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    @Column(name="location", index = true, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     public String location;
 
     @Expose
-    @Column(name="coordinates", unique = false)
+    @Column(name="coordinates")
     public Coordinates coordinates;
 
     @Column(name="favoris")

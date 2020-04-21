@@ -110,57 +110,27 @@ public class LocationSearchService {
     }
 
     public void searchMeasurement(final String zone, final String location) {
-        mLocationSearchRESTService.listMeasurement("FR", zone, location,
-                "pm25",
-                "pm10",
-                "so2",
-                "no2",
-                "o3",
-                "co",
-                "cb",
-                "date",
-                "7").enqueue(new Callback<MeasurementResult>() {
+        mLocationSearchRESTService.listMeasurement("FR", zone, location).enqueue(new Callback<MeasurementResult>() {
             @Override
             public void onResponse(Call<MeasurementResult> call, Response<MeasurementResult> response) {
                 if(response.body() != null && response.body().results != null) {
                     ActiveAndroid.beginTransaction();
-                    searchMeasurementFromDB(location);
+                 //   searchMeasurementFromDB(location);
                     try{
                         for (Measurement m : response.body().results) {
-                            // initialisation du nom de la localité
-
-                            if(locName.equals("")) {
-                                locName = m.location;
+                            Measurement mesure = new Measurement();
+                            mesure.location = m.location;
+                            mesure.city = m.city;
+                            List<Measurement.Values> valeur = new ArrayList<>();
+                            for (Measurement.Values v :m.measurements) {
+                                valeur.add(v);
                             }
-                            // si les deux on le meme nom il s'agit alors de la même zone
-                            else if(locName.equals(m.location)) {
-                            //    Measurement.Values v = new Measurement.Values(m.parameter, m.unit, m.value);
-                                Measurement.Values v = new Measurement.Values();
-                                v.parameter = m.parameter;
-                                v.unit = m.unit;
-                                v.value = m.value;
-                                mesList.add(v);
-                            }
-                            // sinon on a changer de zone
-                            else {
-                                // suppression des mesures ayant le meme paramètre
-                                HashSet<Object> v =new HashSet<>();
-                                mesList.removeIf(e->!v.add(e.parameter));
 
-                                for(Measurement.Values val: mesList) {
-                                    val.save();
-                                    Measurement mes = new Measurement();
-                                    mes.location = m.location;
-                                    Location l = new Select().from(Location.class).where("location LIKE '%" + m.location +"%'" ).executeSingle();
-                                    mes.city = l;
-                                    mes.mesurement = val;
-                                    mes.save();
-                                }
+                            mesure.mesure = gson.toJson(valeur);
+                            mesure.loc = new Select().from(Location.class).where("location=?", m.location).executeSingle();
+                            mesure.save();
 
-                                // on change le nom de la location
-                                locName = m.location;
-                                mesList.clear();
-                            }
+
                         }
                         ActiveAndroid.setTransactionSuccessful();
                     }finally {
@@ -178,11 +148,10 @@ public class LocationSearchService {
     }
 
     public void searchMeasurementFromDB(String location) {
+
         List<Measurement> matchingMeasurementFromDB = new Select()
                 .from(Measurement.class)
-                .join(Location.class)
-                .on("Mesures.location=Locations.Id")
-                .where("Locations.location LIKE '%" + location +"%'" )
+                .where("location =?", location)
                 .execute();
 
         EventBusManager.bus.post(new SearchMeasurementResultEvent(matchingMeasurementFromDB));
@@ -190,13 +159,13 @@ public class LocationSearchService {
     }
 
     public void searchRechercheMeasurementFromDB(String zone, String location) {
+
         List<Measurement> matchingMeasurementFromDB = new Select()
                 .from(Measurement.class)
-                .join(Location.class)
-                .on("Mesures.location=Locations.Id")
-                .where("Locations.zone = ? ", zone)
-                .where("Locations.location LIKE '%" + location +"%'" )
+                .where("city LIKE '%" + zone +"%'" )
+                .where("location LIKE '%" + location +"%'" )
                 .execute();
+
 
         EventBusManager.bus.post(new SearchMeasurementResultEvent(matchingMeasurementFromDB));
 
@@ -243,19 +212,8 @@ public class LocationSearchService {
         @GET("locations")
         Call<LocationResult> listLocation(@Query("country") String country, @Query("city") String zone);
 
-        @GET("measurements")
-        Call<MeasurementResult> listMeasurement(@Query("country") String country,
-                                                @Query("city") String zone,
-                                                @Query("location") String location,
-                                                @Query("parameter[]") String param1,
-                                                @Query("parameter[]") String param2,
-                                                @Query("parameter[]") String param3,
-                                                @Query("parameter[]") String param4,
-                                                @Query("parameter[]") String param5,
-                                                @Query("parameter[]") String param6,
-                                                @Query("parameter[]") String param7,
-                                                @Query("order_by") String order,
-                                                @Query("limit") String limit
-        );
+        @GET("latest")
+        Call<MeasurementResult>listMeasurement(@Query("country") String country, @Query("city") String zone, @Query("location") String location);
+
     }
 }

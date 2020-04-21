@@ -13,6 +13,8 @@ import java.util.List;
 @Table(name = "Meteo")
 public class Meteo extends Model implements Serializable {
 
+    @Column(name="location", index = true, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    public String location;
 
     // les temperature contiennent les temperatures + la date
     @Column(name="tempCourante")
@@ -21,9 +23,6 @@ public class Meteo extends Model implements Serializable {
     @Column(name="tempPrevision")
     public String prevision;
 
-
-    @Column(name="location", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    public Location location;
 
     public static class Temperature implements Serializable {
 

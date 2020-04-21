@@ -5,49 +5,44 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 @Table(name = "Mesures")
 public class Measurement extends Model {
 
     @Expose
+    @Column(name="location", index = true, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     public String location;
 
     @Expose
-    public String parameter;
+    @Column(name="city")
+    public String city;
 
+
+    @Column(name="locationKey")
+    public Location loc;
+
+
+
+    // les mesures sont récupéré sous forme de liste de mesure
     @Expose
-    public double value;
+    public List<Values> measurements;
 
-    @Expose
-    public String unit;
+    // les mesures sont ensuite transformer en json
+    // les mesures sont ensuite stocker sous forme de string
+    @Column(name="mesure")
+    public String mesure;
 
-    @Column(name="valeurs")
-    public Values mesurement;
+    public static class Values {
 
-    @Column(name="location")
-    public Location city;
-
-
-
-    public Measurement() {
-        super();
-    }
-
-
-    @Table(name="Valeurs")
-    public static class Values extends Model {
-
-        @Column(name = "parametre")
+        @Expose
         public String parameter;
 
-        @Column(name="unit")
+        @Expose
+        public Float value;
+
+        @Expose
         public String unit;
-
-        @Column(name="value")
-        public double value;
-
-        public Values() {
-            super();
-        }
 
     }
 

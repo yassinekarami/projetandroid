@@ -20,15 +20,20 @@ import org.android.projetandroid.model.Measurement;
 import org.android.projetandroid.service.LocationSearchService;
 import org.android.projetandroid.ui.LocationAdapter;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class RechercheActivty extends AppCompatActivity {
+
 
 
     @BindView(R.id.activity_recherche_zone_edittext)
@@ -73,6 +78,8 @@ public class RechercheActivty extends AppCompatActivity {
     private LocationAdapter mLocationAdapter;
 
 
+    private Gson gson ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +92,10 @@ public class RechercheActivty extends AppCompatActivity {
         mLocationRecyclerView.setAdapter(mLocationAdapter);
         mLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
+        gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
+                .serializeNulls()
+                .create();
     }
 
     @Override
@@ -108,7 +119,7 @@ public class RechercheActivty extends AppCompatActivity {
         if(!mPm25Pram.getText().toString().equals("")) {
             paramHashMap.put("pm25", Float.parseFloat(mPm25Pram.getText().toString()));
         }
-        else   paramHashMap.put("pm25", 0f);
+        else  paramHashMap.put("pm25", 0f);
 
         if(!mPm10Pram.getText().toString().equals("")) {
             paramHashMap.put("pm10", Float.parseFloat(mPm10Pram.getText().toString()));
@@ -158,22 +169,27 @@ public class RechercheActivty extends AppCompatActivity {
 
             boolean ok = true;
             for(Measurement m: event.getMeasurements()) { // boucle pour parcourir les mesures
-                if(paramHashMap.get(m.mesurement.parameter) > m.mesurement.value) { ok = false;}
+                Measurement.Values[] valeur = gson.fromJson(m.mesure, Measurement.Values[].class);
+                for(Measurement.Values v: valeur)
+                {
+                    if(paramHashMap.get(v.parameter) > v.value) { ok = false;}
 
-                if(!measurementHashmap.containsKey(m.city.location)) { // la clée n'existe pas
-                    mesureList  = new ArrayList<>();
-                    measurementHashmap.put(m.city.location, mesureList);
+                    if(!measurementHashmap.containsKey(m.location)) { // la clée n'existe pas
+                        mesureList  = new ArrayList<>();
+                        measurementHashmap.put(m.location, mesureList);
+                    }
+
+                    if(m.location != null && m.mesure != null) {
+                        measurementHashmap.get(m.location).add(m);
+                    }
                 }
 
-                if(m.city.location != null && m.mesurement != null) {
-                    measurementHashmap.get(m.city.location).add(m);
+                if(ok) {
+                    locationList.add(mes.loc);
                 }
-            }
-            if(ok) {
-                locationList.add(mes.city);
-            }
-            else {
-                measurementHashmap.remove(mes.city.location);
+                else {
+                    measurementHashmap.remove(mes.location);
+                }
             }
         }
 

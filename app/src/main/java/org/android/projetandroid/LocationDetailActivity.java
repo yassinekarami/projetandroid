@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -71,9 +72,12 @@ public class LocationDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_location_detail);
         ButterKnife.bind(this);
 
+
         this.gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.FINAL, Modifier.TRANSIENT, Modifier.STATIC)
                 .serializeNulls()
                 .create();
+
+        mDetailLocationPrevision.setMovementMethod(new ScrollingMovementMethod());
 
         Intent intent = getIntent();
         locationDetail = (Location)intent.getSerializableExtra("location");
@@ -154,8 +158,13 @@ public class LocationDetailActivity extends AppCompatActivity {
     @Subscribe
     public void  searchResult(final SearchMeasurementResultEvent event) {
         runOnUiThread( () -> {
-            for(Measurement m : event.getMeasurements()) {
-                mMeasurementLocations.append(m.mesurement.parameter+" : "+m.mesurement.value +" "+m.mesurement.unit+"\n");
+
+            for(Measurement m: event.getMeasurements()) {
+                Measurement.Values[] valeur = gson.fromJson(m.mesure, Measurement.Values[].class);
+                for (Measurement.Values v : valeur)
+                {
+                    mMeasurementLocations.append(v.parameter+" : "+v.value +" "+v.unit+"\n");
+                }
             }
         });
 
@@ -168,7 +177,7 @@ public class LocationDetailActivity extends AppCompatActivity {
             for(Meteo m : event.getMeteos()) {
                 Meteo.Temperature[] temp = gson.fromJson(m.prevision, Meteo.Temperature[].class);
                 for(Meteo.Temperature t: temp) {
-                    mDetailLocationPrevision.append(t.date+ " : " +t.valeur+"\n");
+                    mDetailLocationPrevision.append("   " +t.date+ " : " +t.valeur+"\n");
                 }
             }
         });
