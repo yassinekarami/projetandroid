@@ -23,12 +23,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @OnClick(R.id.btnMapActivity)
-    public void clicketOnSwitchMap() {
-        Intent intent = new Intent(this, MapZoneActivity.class);
-        startActivity(intent);
-    }
-
     @OnClick(R.id.btnFavorisActivity)
     public void clickedOnFavorisList(){
         Intent intent = new Intent (this, FavorisActivity.class);

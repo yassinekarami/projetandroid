@@ -5,6 +5,8 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 @Table(name = "Zones")
 public class Zone extends Model {
 
@@ -27,6 +29,8 @@ public class Zone extends Model {
     @Expose
     @Column(name = "nblocation")
     public int locations;
+
+    public List<Double> coordonnees;
 
     public Zone() {
         super();

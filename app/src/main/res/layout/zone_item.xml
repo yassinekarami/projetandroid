@@ -44,11 +44,27 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/zone_adapter_detail"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/detail_bouton" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/zone_adapter_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/detail_bouton" />
+
+
+            <Button
+                android:id="@+id/zone_adapter_carte_bouton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/carte_bouton" />
+        </LinearLayout>
+
+
+
 
         <View
             android:layout_width="match_parent"

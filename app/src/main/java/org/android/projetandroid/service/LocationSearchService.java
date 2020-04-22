@@ -179,7 +179,8 @@ public class LocationSearchService {
         }
         mLastScheduleTask = mScheduler.schedule(new Runnable() {
             public void run() {
-                List<Location> matchingLocationFromBD = new Select().from(Location.class)
+
+                 List<Location> matchingLocationFromBD = new Select().from(Location.class)
                         .where("zone = ? ", zone)
                         .where("location LIKE '%" + search +"%'" )
                         .orderBy("location")
@@ -205,6 +206,7 @@ public class LocationSearchService {
             }
         }, REFRESH_DELAY, TimeUnit.MILLISECONDS);
     }
+
 
 
 

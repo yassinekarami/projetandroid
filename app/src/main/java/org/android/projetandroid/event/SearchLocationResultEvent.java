@@ -12,7 +12,9 @@ public class SearchLocationResultEvent {
     public SearchLocationResultEvent(List<Location> location) {
         this.location = location;
     }
-    
+
+
+
     public List<Location> getLocation() {
         return location;
     }

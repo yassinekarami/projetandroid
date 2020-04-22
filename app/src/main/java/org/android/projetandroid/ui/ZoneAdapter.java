@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.android.projetandroid.MapZoneActivity;
 import org.android.projetandroid.R;
 import org.android.projetandroid.ZoneLocationActivity;
 import org.android.projetandroid.model.Zone;
@@ -59,6 +60,15 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
                 context.startActivity(seeZoneLocationActivity);
             }
         });
+
+        holder.mZoneCarteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent seeMapZoneActivity = new Intent(context, MapZoneActivity.class);
+                seeMapZoneActivity.putExtra("zone", zone.name);
+                context.startActivity(seeMapZoneActivity);
+            }
+        });
     }
 
     @Override
@@ -87,6 +97,8 @@ public class ZoneAdapter extends RecyclerView.Adapter<ZoneAdapter.ZoneViewHolder
         @BindView(R.id.zone_adapter_detail)
         Button mDetailButton;
 
+        @BindView(R.id.zone_adapter_carte_bouton)
+        Button mZoneCarteButton;
 
         public ZoneViewHolder(@NonNull View itemView) {
             super(itemView);

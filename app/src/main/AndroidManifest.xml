@@ -12,7 +12,10 @@
         android:value="43" />
     <meta-data
         android:name="AA_MODELS"
-        android:value="org.android.projetandroid.model.Zone,             org.android.projetandroid.model.Location,             org.android.projetandroid.model.Location.Coordinates,             org.android.projetandroid.model.Location.Indicateur" />
+        android:value="org.android.projetandroid.model.Zone,
+            org.android.projetandroid.model.Location,
+            org.android.projetandroid.model.Location.Coordinates,
+            org.android.projetandroid.model.Meteo" />
 
     <application
         android:name="com.activeandroid.app.Application"

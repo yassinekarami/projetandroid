@@ -4,6 +4,7 @@
     <string name="title_activity_map_zone">MapZoneActivity</string>
     <string name="title_activity_favoris">FavorisActivity</string>
     <string name="detail_bouton">Détail</string>
+    <string name="carte_bouton">Carte</string>
     <string name="liste_des_zones">Liste des zones</string>
     <string name="carte_des_zone">Carte des zone</string>
     <string name="locations_favorites">Locations favorites</string>
