@@ -1,6 +1,8 @@
 package org.android.projetandroid;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 
@@ -16,11 +18,22 @@ import android.widget.ProgressBar;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Subscribe;
 
 import org.android.projetandroid.event.EventBusManager;
+import org.android.projetandroid.event.SearchLocationResultEvent;
 import org.android.projetandroid.event.SearchResultEvent;
+import org.android.projetandroid.model.Location;
+import org.android.projetandroid.model.Zone;
 import org.android.projetandroid.service.ZoneSearchService;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,14 +49,20 @@ public class MapZoneActivity extends AppCompatActivity implements OnMapReadyCall
     @BindView(R.id.activity_main_loader)
     ProgressBar mProgressBar;
 
+    private Map<String, Location> mMarkersToPlaces = new LinkedHashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_zone);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setContentView(R.layout.activity_map_zone);
+        /*Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);*/
 
         ButterKnife.bind(this);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         if (getIntent().hasExtra("currentSearch")) {
             mSearchEditText.setText(getIntent().getStringExtra("currentSearch"));
@@ -71,8 +90,8 @@ public class MapZoneActivity extends AppCompatActivity implements OnMapReadyCall
             }
         });
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+       /* SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);*/
 
     }
 
@@ -90,8 +109,40 @@ public class MapZoneActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     @Subscribe
-    public void searchResult(final SearchResultEvent event){
+    public void searchResult(final SearchLocationResultEvent event){
         //update markers
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Here someone has posted a SearchResultEvent
+                // Check that map is ready
+                if (mActiveGoogleMap != null) {
+                    // Update map's markers
+                    mActiveGoogleMap.clear();
+                    mMarkersToPlaces.clear();
+
+                    LatLngBounds.Builder cameraBounds = LatLngBounds.builder();
+                    for (Location place : event.getLocation()) {
+                        int markerIconResource = R.drawable.common_google_signin_btn_icon_dark;
+                        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), markerIconResource);
+                        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, 50, 50, false);
+
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .position(new LatLng(place.coordinates.latitude, place.coordinates.longitude))
+                                .title(place.city)
+                                .snippet(place.city)
+                                .icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap));
+
+                        cameraBounds.include(markerOptions.getPosition());
+
+                        Marker marker = mActiveGoogleMap.addMarker(markerOptions);
+                        mMarkersToPlaces.put(marker.getId(), place);
+                    }
+
+                    mProgressBar.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     @OnClick(R.id.activity_map_switch_button)
@@ -106,5 +157,17 @@ public class MapZoneActivity extends AppCompatActivity implements OnMapReadyCall
         mActiveGoogleMap = googleMap;
         mActiveGoogleMap.getUiSettings().setZoomControlsEnabled(true);
         mActiveGoogleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+
+        mActiveGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Location associatedPlace = mMarkersToPlaces.get(marker.getId());
+                if (associatedPlace != null) {
+                    Intent seePlaceDetailIntent = new Intent(MapZoneActivity.this, LocationDetailActivity.class);
+                    seePlaceDetailIntent.putExtra("placeStreet", associatedPlace.city);
+                    startActivity(seePlaceDetailIntent);
+                }
+            }
+        });
     }
 }
