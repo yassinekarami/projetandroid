@@ -1,17 +1,17 @@
 <resources>
-    <string name="app_name">projetandroid</string>
+    <string name="app_name">Météo Lookout</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_map_zone">MapZoneActivity</string>
     <string name="title_activity_favoris">FavorisActivity</string>
-    <string name="detail_bouton">Détail</string>
+    <string name="detail_bouton">Détails</string>
     <string name="carte_bouton">Carte</string>
-    <string name="liste_des_zones">Liste des zones</string>
-    <string name="carte_des_zone">Carte des zone</string>
-    <string name="locations_favorites">Locations favorites</string>
+    <string name="liste_des_zones">Liste des régions</string>
+    <string name="carte_des_zone">Carte des régions</string>
+    <string name="locations_favorites">Endroits Favoris</string>
     <string name="recherche">Recherche</string>
     <string name="title_activity_recherche_activty">RechercheActivty</string>
-    <string name="par_zone">Par zone</string>
-    <string name="par_location">Par location</string>
-    <string name="parametre">Paramètre</string>
-    <string name="parametre_value">Valeur</string>
+    <string name="par_zone">Par région</string>
+    <string name="par_location">Par endroit</string>
+    <string name="parametre">Paramètres</string>
+    <string name="parametre_value">Valeurs</string>
 </resources>

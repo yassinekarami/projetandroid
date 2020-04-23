@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ZoneListActivity"
-    tools:showIn="@layout/activity_list">
+    tools:showIn="@layout/activity_list"
+    android:textStyle="bold">
 
     <LinearLayout
         android:orientation="vertical"
@@ -22,13 +23,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:ems="10"
-            android:hint="Recherchez une zone"
+            android:hint="Recherchez une région"
             android:inputType="text"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="623dp" />
     </LinearLayout>
 
     <ProgressBar
